@@ -1,19 +1,30 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/core/api/auth/supabase_auth.dart';
+import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/outline_area.dart';
 import 'package:gefest/theme.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../shared/shared.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController passwordController = TextEditingController(text: "");
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,48 +77,80 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Column _buildLoginForm() {
-    return Column(
-      children: [
-        const BaseTextField(
-          header: "Почта",
-          hintText: "xyz@gmail.com",
-          autofillHints: [AutofillHints.email],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const BaseTextField(
-          header: "Пароль",
-          hintText: "🔑",
-          hidable: true,
-          autofillHints: [AutofillHints.password],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        BaseElevatedButton(
-          text: "Войти",
-          onTap: () {},
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Form _buildLoginForm() {
+    return Form(
+      key: _formKey,
+      child: AutofillGroup(
+        child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                launchUrlString("https://t.me/mdktdys");
+            BaseTextField(
+              header: "Почта",
+              hintText: "xyz@gmail.com",
+              controller: emailController,
+              onTapOutside: (p0) {
+                _formKey.currentState!.validate();
               },
-              child: Text(
-                "dev: @mdktdys",
-                style: Fa.smallMono,
-              ),
+              onEditingComplete: () {
+                _formKey.currentState!.validate();
+              },
+              validator: (p0) {
+                if (p0 != null && !EmailValidator.validate(p0)) {
+                  return "Некорректный Email";
+                }
+                return null;
+              },
+              autofillHints: const [AutofillHints.email],
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            BaseTextField(
+              header: "Пароль",
+              controller: passwordController,
+              hintText: "🔑",
+              hidable: true,
+              autofillHints: const [AutofillHints.password],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            BaseElevatedButton(
+              text: "Войти",
+              onTap: () async {
+                if (_formKey.currentState!.validate()) {
+                  TextInput.finishAutofillContext();
+                  final ActionResult res = await Auth.signIn(
+                      emailController.text, passwordController.text);
+
+                  if (res is ActionResultError) {
+                    ref.watch(messagesProvider).showMessage(
+                        type: MesTypes.error, header: "Ошибка", body: res.text);
+                  }
+
+                  if (res is ActionResultOk) {}
+                }
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    launchUrlString("https://t.me/mdktdys");
+                  },
+                  child: Text(
+                    "dev: @mdktdys",
+                    style: Fa.smallMono,
+                  ),
+                ),
+              ],
+            )
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
 }

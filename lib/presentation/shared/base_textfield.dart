@@ -7,11 +7,21 @@ class BaseTextField extends StatefulWidget {
   final Iterable<String>? autofillHints;
   final String? hintText;
   final String? header;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final Function(PointerDownEvent)? onTapOutside;
+  final Function()? onEditingComplete;
+  final Function(String)? onChanged;
   const BaseTextField(
       {super.key,
       this.autofillHints,
       this.hintText,
       this.header,
+      this.controller,
+      this.validator,
+      this.onChanged,
+      this.onTapOutside,
+      this.onEditingComplete,
       this.hidable = false});
 
   @override
@@ -41,9 +51,14 @@ class _BaseTextFieldState extends State<BaseTextField> {
             height: 10,
           )
         ],
-        TextField(
+        TextFormField(
           style: Fa.smedium,
           obscureText: hided,
+          controller: widget.controller,
+          validator: widget.validator,
+          onTapOutside: widget.onTapOutside,
+          onEditingComplete: widget.onEditingComplete,
+          onChanged: widget.onChanged,
           decoration: InputDecoration(
               suffixIcon: widget.hidable
                   ? GestureDetector(
