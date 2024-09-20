@@ -25,17 +25,30 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: 80,
-                  ),
-                  Text("Замены уксивтика",
-                      style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
+              if (MediaQuery.sizeOf(context).width > 530)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/logo.png",
+                      width: 80,
+                    ),
+                    Text("Замены уксивтика",
+                        style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                  ],
+                )
+              else
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/logo.png",
+                      width: 120,
+                    ),
+                    Text("Замены уксивтика",
+                        style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                  ],
+                ),
               const SizedBox(
                 height: 20,
               ),
