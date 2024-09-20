@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/outline_area.dart';
 import 'package:gefest/theme.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../shared/shared.dart';
 
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const BaseTextField(
           header: "Почта",
           hintText: "xyz@gmail.com",
+          autofillHints: [AutofillHints.email],
         ),
         const SizedBox(
           height: 20,
@@ -65,6 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
         const BaseTextField(
           header: "Пароль",
           hintText: "🔑",
+          hidable: true,
+          autofillHints: [AutofillHints.password],
         ),
         const SizedBox(
           height: 20,
@@ -79,9 +83,14 @@ class _LoginScreenState extends State<LoginScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "@mdktdys",
-              style: Fa.smallMono,
+            GestureDetector(
+              onTap: () {
+                launchUrlString("https://t.me/mdktdys");
+              },
+              child: Text(
+                "dev: @mdktdys",
+                style: Fa.smallMono,
+              ),
             ),
           ],
         )
