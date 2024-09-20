@@ -38,46 +38,54 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),
-              OutlineArea(
-                child: Column(
-                  children: [
-                    const BaseTextField(
-                      header: "Почта",
-                      hintText: "xyz@gmail.com",
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const BaseTextField(
-                      header: "Пароль",
-                      hintText: "🔑",
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BaseElevatedButton(
-                      text: "Войти",
-                      onTap: () {},
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "@mdktdys",
-                          style: Fa.smallMono,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
+              if (MediaQuery.sizeOf(context).width > 530)
+                OutlineArea(
+                  child: _buildLoginForm(),
+                )
+              else
+                Padding(
+                    padding: const EdgeInsets.all(28), child: _buildLoginForm())
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Column _buildLoginForm() {
+    return Column(
+      children: [
+        const BaseTextField(
+          header: "Почта",
+          hintText: "xyz@gmail.com",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        const BaseTextField(
+          header: "Пароль",
+          hintText: "🔑",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        BaseElevatedButton(
+          text: "Войти",
+          onTap: () {},
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "@mdktdys",
+              style: Fa.smallMono,
+            ),
+          ],
+        )
+      ],
     );
   }
 }
