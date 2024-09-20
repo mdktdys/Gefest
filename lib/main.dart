@@ -6,10 +6,13 @@ import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 final globalAppKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
+  usePathUrlStrategy();
+
   final supabase =
       await Supabase.initialize(url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY);
   GetIt.I.registerSingleton<Supabase>(supabase);
