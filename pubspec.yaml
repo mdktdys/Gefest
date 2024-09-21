@@ -18,6 +18,7 @@ dependencies:
   supabase_flutter: ^2.6.0
   talker_flutter: ^4.4.1
   url_launcher: ^6.3.0
+  sidebarx: ^0.17.1
 
 dev_dependencies:
   flutter_test:

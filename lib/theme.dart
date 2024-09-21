@@ -18,7 +18,8 @@ class Fa {
 }
 
 final darkTheme = ThemeData.dark().copyWith(
-
+    scaffoldBackgroundColor: const Color(0xFF1D2126),
+    canvasColor: const Color(0xFF1D2126),
     colorScheme: ColorScheme.fromSeed(
 
         primary: const Color(0xff2196f3),

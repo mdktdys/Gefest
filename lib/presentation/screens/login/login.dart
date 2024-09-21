@@ -7,8 +7,7 @@ import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/outline_area.dart';
 import 'package:gefest/theme.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../shared/shared.dart';
@@ -127,7 +126,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         type: MesTypes.error, header: "Ошибка", body: res.text);
                   }
 
-                  if (res is ActionResultOk) {}
+                  if (res is ActionResultOk) {
+                    context.go("/dashboard");
+                  }
                 }
               },
             ),
