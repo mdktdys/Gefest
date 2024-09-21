@@ -1,7 +1,7 @@
 name: gefest
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -19,6 +19,7 @@ dependencies:
   talker_flutter: ^4.4.1
   url_launcher: ^6.3.0
   sidebarx: ^0.17.1
+  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:

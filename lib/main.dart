@@ -7,10 +7,13 @@ import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 final globalAppKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   usePathUrlStrategy();
 
   final supabase =
@@ -19,6 +22,9 @@ void main() async {
 
   final talker = TalkerFlutter.init();
   GetIt.I.registerSingleton<Talker>(talker);
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  GetIt.I.registerSingleton<PackageInfo>(packageInfo);
 
   runApp(ProviderScope(
     child: MaterialApp.router(

@@ -76,6 +76,8 @@ class _BaseTextFieldState extends State<BaseTextField> {
                               hided
                                   ? "assets/icons/eye_closed.svg"
                                   : "assets/icons/eye_open.svg",
+                                  width: 24,
+                                  height: 24,
                               color: const Color(0xFF7d858c),
                             ),
                           )),
