@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 class BaseIconButton extends StatelessWidget {
   final Function()? onTap;
   final String icon;
-  const BaseIconButton({super.key, this.onTap, required this.icon});
+  final Color? color;
+  const BaseIconButton({super.key, this.onTap, required this.icon, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class BaseIconButton extends StatelessWidget {
             aspectRatio: 1 / 1,
             child: SvgPicture.asset(
               icon,
-              color: Colors.white,
+              color: color??Colors.white,
               width: 32,
               height: 32,
             ),

@@ -36,7 +36,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: const EdgeInsets.all(20),
             child: Align(
               alignment: Alignment.bottomRight,
-              child: Text("build: ${GetIt.I.get<PackageInfo>().buildNumber}",style: Fa.smallMono,),
+              child: Text(
+                "build: ${GetIt.I.get<PackageInfo>().buildNumber}",
+                style: Fa.smallMono,
+              ),
             ),
           ),
           Center(
@@ -55,7 +58,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 80,
                         ),
                         Text("Замены уксивтика",
-                            style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                            style:
+                                Fa.big.copyWith(fontWeight: FontWeight.bold)),
                       ],
                     )
                   else
@@ -67,7 +71,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 120,
                         ),
                         Text("Замены уксивтика",
-                            style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                            style:
+                                Fa.big.copyWith(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   const SizedBox(
@@ -79,7 +84,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     )
                   else
                     Padding(
-                        padding: const EdgeInsets.all(28), child: _buildLoginForm())
+                        padding: const EdgeInsets.all(28),
+                        child: _buildLoginForm())
                 ],
               ),
             ),
@@ -87,6 +93,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ],
       ),
     );
+  }
+
+  _login() async {
+    if (_formKey.currentState!.validate()) {
+      TextInput.finishAutofillContext();
+      final ActionResult res =
+          await Auth.signIn(emailController.text, passwordController.text);
+
+      if (res is ActionResultError) {
+        ref.watch(messagesProvider).showMessage(
+            type: MesTypes.error,
+            header: "Ошибка",
+            body: res.text,
+            context: context);
+      }
+
+      if (res is ActionResultOk) {
+        context.go("/dashboard");
+      }
+    }
   }
 
   Form _buildLoginForm() {
@@ -121,6 +147,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               controller: passwordController,
               hintText: "🔑",
               hidable: true,
+              onFieldSubmitted: (p0) {
+                _login();
+              },
               autofillHints: const [AutofillHints.password],
             ),
             const SizedBox(
@@ -129,20 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             BaseElevatedButton(
               text: "Войти",
               onTap: () async {
-                if (_formKey.currentState!.validate()) {
-                  TextInput.finishAutofillContext();
-                  final ActionResult res = await Auth.signIn(
-                      emailController.text, passwordController.text);
-
-                  if (res is ActionResultError) {
-                    ref.watch(messagesProvider).showMessage(
-                        type: MesTypes.error, header: "Ошибка", body: res.text);
-                  }
-
-                  if (res is ActionResultOk) {
-                    context.go("/dashboard");
-                  }
-                }
+                _login();
               },
             ),
             const SizedBox(

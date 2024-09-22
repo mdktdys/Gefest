@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/routes.dart';
 import 'package:gefest/secrets.dart';
@@ -9,7 +10,6 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-final globalAppKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +27,13 @@ void main() async {
   GetIt.I.registerSingleton<PackageInfo>(packageInfo);
 
   runApp(ProviderScope(
-    child: MaterialApp.router(
-        key: globalAppKey,
-        routerConfig: router,
-        color: Colors.blue,
-        debugShowCheckedModeBanner: false,
-        theme: darkTheme),
+    child: Portal(
+      child: MaterialApp.router(
+          title: "Dev Замены уксивтика",
+          routerConfig: router,
+          color: Colors.blue,
+          debugShowCheckedModeBanner: false,
+          theme: darkTheme),
+    ),
   ));
 }

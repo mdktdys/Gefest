@@ -12,6 +12,9 @@ class BaseTextField extends StatefulWidget {
   final Function(PointerDownEvent)? onTapOutside;
   final Function()? onEditingComplete;
   final Function(String)? onChanged;
+  final Function()? onTap;
+  final Function(String)? onFieldSubmitted;
+  final bool locked;
   const BaseTextField(
       {super.key,
       this.autofillHints,
@@ -20,8 +23,11 @@ class BaseTextField extends StatefulWidget {
       this.controller,
       this.validator,
       this.onChanged,
+      this.onTap,
       this.onTapOutside,
       this.onEditingComplete,
+      this.onFieldSubmitted,
+      this.locked = false,
       this.hidable = false});
 
   @override
@@ -52,6 +58,7 @@ class _BaseTextFieldState extends State<BaseTextField> {
           )
         ],
         TextFormField(
+          enabled: !widget.locked,
           style: Fa.smedium,
           obscureText: hided,
           controller: widget.controller,
@@ -59,6 +66,8 @@ class _BaseTextFieldState extends State<BaseTextField> {
           onTapOutside: widget.onTapOutside,
           onEditingComplete: widget.onEditingComplete,
           onChanged: widget.onChanged,
+          onTap: widget.onTap,
+          onFieldSubmitted: widget.onFieldSubmitted,
           decoration: InputDecoration(
               suffixIcon: widget.hidable
                   ? GestureDetector(
@@ -76,8 +85,8 @@ class _BaseTextFieldState extends State<BaseTextField> {
                               hided
                                   ? "assets/icons/eye_closed.svg"
                                   : "assets/icons/eye_open.svg",
-                                  width: 24,
-                                  height: 24,
+                              width: 24,
+                              height: 24,
                               color: const Color(0xFF7d858c),
                             ),
                           )),
@@ -92,7 +101,10 @@ class _BaseTextFieldState extends State<BaseTextField> {
               focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Ca.primary),
                   borderRadius: BorderRadius.circular(10)),
-              disabledBorder: InputBorder.none,
+              disabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onSurface),
+                  borderRadius: BorderRadius.circular(10)),
               contentPadding: const EdgeInsets.all(10.0),
               hintText: widget.hintText),
           autofillHints: widget.autofillHints,

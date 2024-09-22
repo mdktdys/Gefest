@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gefest/main.dart';
 import 'package:gefest/theme.dart';
 
 final messagesProvider = Provider<Messanger>((ref) {
@@ -15,8 +14,7 @@ class Messanger {
   });
 
   showMessage(
-      {required MesTypes type, required String header, required String body}) {
-    final context = globalAppKey.currentState!.context;
+      {required MesTypes type, required String header, required String body, required BuildContext context}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       dismissDirection: DismissDirection.horizontal,
       // margin: EdgeInsets.only(
