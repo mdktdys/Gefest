@@ -19,7 +19,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ScheduleBloc(),
+      create: (context) => ref.read(scheduleProvider).scheduleBloc,
       child: Column(
         children: [
           const ScheduleEditorTopPanel(),

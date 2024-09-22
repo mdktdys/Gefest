@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/core/api/data/schedule/bloc/bloc.dart';
 import 'package:gefest/core/api/data/schedule/types.dart';
 import 'package:gefest/core/api/models/groups.dart';
 import 'package:gefest/core/api/models/int_search_wrapper.dart';
@@ -20,6 +21,7 @@ final scheduleProvider = ChangeNotifierProvider<ScheduleNotifier>((ref) {
 });
 
 class ScheduleNotifier extends ChangeNotifier {
+  ScheduleBloc scheduleBloc = ScheduleBloc();
   Ref ref;
   ScheduleNotifier({
     required this.ref,
@@ -207,7 +209,6 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
               ],
             ),
           ),
-          Expanded(child: SizedBox.fromSize()),
           Container(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -230,7 +231,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                           cabinet: cabinet!.id,
                           date: date!);
                       final res = await ref.watch(scheduleProvider).addPara(para);
-                      context.watch<ScheduleBloc>().add(ReloadItemSchedule());
+                      ref.watch(scheduleProvider).scheduleBloc.add(ReloadItemSchedule());
                       context.pop();
                     } else {
                       ref.watch(messagesProvider).showMessage(

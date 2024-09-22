@@ -33,7 +33,6 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
           emit(ScheduleInitial());
           return;
         }
-        emit(ScheduleLoading());
         final request = currentRequest!;
         final paras = await SupabaseApi.getParas(
             request.type, request.searchItemID, request.date);

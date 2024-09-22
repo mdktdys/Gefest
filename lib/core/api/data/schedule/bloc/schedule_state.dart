@@ -15,6 +15,9 @@ final class ScheduleSuccess extends ScheduleState {
   final List<Paras> paras;
 
   const ScheduleSuccess({required this.paras});
+
+  @override
+  List<Object> get props => [paras];
 }
 
 final class ScheduleFailed extends ScheduleState {
