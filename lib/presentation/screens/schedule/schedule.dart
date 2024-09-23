@@ -23,24 +23,33 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
       child: Column(
         children: [
           const ScheduleEditorTopPanel(),
-          Expanded(child: BlocBuilder<ScheduleBloc, ScheduleState>(
-            builder: (context, state) {
-              if (state is ScheduleFailed) {
-                return Center(
-                  child: Text("Ошибка ${state.error} ${state.trace}"),
-                );
-              }
-              if (state is ScheduleSuccess) {
-                var collection = [0, 1, 2, 3, 4, 5];
-                final weekParas = state.paras;
-                final mondayDate = ref.watch(scheduleProvider).getMondayDate();
-                return ScheduleGrid(
-                    collection: collection,
-                    mondayDate: mondayDate,
-                    weekParas: weekParas);
-              }
-              return const Center(child: Text("Выберите объект расписания"));
-            },
+          Expanded(child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: BlocBuilder<ScheduleBloc, ScheduleState>(
+              key: UniqueKey(),
+              builder: (context, state) {
+                if (state is ScheduleFailed) {
+                  return Center(
+                    child: Text("Ошибка ${state.error} ${state.trace}"),
+                  );
+                }
+                if (state is ScheduleLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is ScheduleSuccess) {
+                  var collection = [0, 1, 2, 3, 4, 5];
+                  final weekParas = state.paras;
+                  final mondayDate = ref.watch(scheduleProvider).getMondayDate();
+                  return ScheduleGrid(
+                      collection: collection,
+                      mondayDate: mondayDate,
+                      weekParas: weekParas);
+                }
+                return const Center(child: Text("Выберите объект расписания"));
+              },
+            ),
           ))
         ],
       ),

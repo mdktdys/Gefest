@@ -30,6 +30,19 @@ class ScheduleNotifier extends ChangeNotifier {
   DateTime navigationDate = DateTime(2024, 9, 9);
   SearchItem? current_schedule_object;
 
+  setNavigationDate(DateTime date, BuildContext context){
+    navigationDate = date;
+
+    if(current_schedule_object != null){
+        ScheduleRequest request = ScheduleRequest(
+        type: current_schedule_object!.type,
+        date: navigationDate,
+        searchItemID: current_schedule_object!.searchID);
+        context.read<ScheduleBloc>().add(LoadItemSchedule(request));
+    }
+    notifyListeners();
+  }
+
   DateTime getMondayDate() {
     int currentDayOfWeek = navigationDate.weekday;
     DateTime mondayDate =
@@ -41,7 +54,7 @@ class ScheduleNotifier extends ChangeNotifier {
     current_schedule_object = item;
     ScheduleRequest request = ScheduleRequest(
         type: item.type,
-        date: DateTime(2024, 9, 9),
+        date: navigationDate,
         searchItemID: item.searchID);
     context.read<ScheduleBloc>().add(LoadItemSchedule(request));
   }

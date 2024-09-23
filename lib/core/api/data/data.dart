@@ -21,19 +21,35 @@ class DataProvider {
   });
 
   Teacher? getTeacherById(int id) {
-    return ref.watch(teachersProvider).value?.where((teacher)=>teacher.id == id).firstOrNull;
+    return ref
+        .watch(teachersProvider)
+        .value
+        ?.where((teacher) => teacher.id == id)
+        .firstOrNull;
   }
 
   Group? getGroupById(int id) {
-    return ref.watch(groupsProvider).value?.where((group)=>group.id == id).firstOrNull;
+    return ref
+        .watch(groupsProvider)
+        .value
+        ?.where((group) => group.id == id)
+        .firstOrNull;
   }
 
   Cabinet? getCabinetById(int id) {
-    return ref.watch(cabinetsProvider).value?.where((cabinet)=>cabinet.id == id).firstOrNull;
+    return ref
+        .watch(cabinetsProvider)
+        .value
+        ?.where((cabinet) => cabinet.id == id)
+        .firstOrNull;
   }
 
   Course? getCourseById(int id) {
-    return ref.watch(coursesProvider).value?.where((course)=>course.id == id).firstOrNull;
+    return ref
+        .watch(coursesProvider)
+        .value
+        ?.where((course) => course.id == id)
+        .firstOrNull;
   }
 }
 
@@ -45,6 +61,25 @@ final timetableProvider = FutureProvider<List<ParaTime>>((ref) async {
       .order('number', ascending: true);
   return parse<ParaTime>(res, ParaTime.fromMap).toList();
 });
+
+
+
+final cabinetsProvider = FutureProvider<List<Cabinet>>((ref) async {
+  final supabaseClient = GetIt.I.get<Supabase>().client;
+  final res = await supabaseClient.from('Cabinets').select('*');
+
+  return parse<Cabinet>(res, Cabinet.fromMap).toList();
+});
+
+
+
+final coursesProvider = FutureProvider<List<Course>>((ref) async {
+  final supabaseClient = GetIt.I.get<Supabase>().client;
+  final res = await supabaseClient.from('Courses').select('*');
+
+  return parse<Course>(res, Course.fromMap).toList();
+});
+
 
 final groupsProvider = FutureProvider<List<Group>>((ref) async {
   final supabaseClient = GetIt.I.get<Supabase>().client;
@@ -61,19 +96,27 @@ final teachersProvider = FutureProvider<List<Teacher>>((ref) async {
   return parse<Teacher>(res, Teacher.fromMap).toList();
 });
 
-final coursesProvider = FutureProvider<List<Course>>((ref) async {
-  final supabaseClient = GetIt.I.get<Supabase>().client;
-  final res = await supabaseClient.from('Courses').select('*');
+final searchItemsProvider = FutureProvider<List<SearchItem>>((ref) async {
+  final groupsAsyncValue = ref.watch(groupsProvider);
+  final teachersAsyncValue = ref.watch(teachersProvider);
 
-  return parse<Course>(res, Course.fromMap).toList();
+  if (groupsAsyncValue is AsyncLoading || teachersAsyncValue is AsyncLoading) {
+    return [];
+  }
+
+  if (groupsAsyncValue.hasError) {
+    throw groupsAsyncValue.error!;
+  }
+  if (teachersAsyncValue.hasError) {
+    throw teachersAsyncValue.error!;
+  }
+
+  final groups = groupsAsyncValue.value ?? [];
+  final teachers = teachersAsyncValue.value ?? [];
+
+  return [...groups,...teachers];
 });
 
-final cabinetsProvider = FutureProvider<List<Cabinet>>((ref) async {
-  final supabaseClient = GetIt.I.get<Supabase>().client;
-  final res = await supabaseClient.from('Cabinets').select('*');
-
-  return parse<Cabinet>(res, Cabinet.fromMap).toList();
-});
 
 final searchProvider =
     StateNotifierProvider<SearchNotifier, List<SearchItem>>((ref) {

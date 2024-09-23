@@ -51,7 +51,9 @@ class _ScheduleEditorTopPanelState
                     height: 38,
                     child: BaseIconButton(
                       icon: "assets/icons/arrow_left.svg",
-                      onTap: () {},
+                      onTap: () {
+                        ref.read(scheduleProvider).setNavigationDate(navigationDate.subtract(const Duration(days: 7)),context);
+                      },
                     )),
                 const SizedBox(
                   width: 10,
@@ -60,7 +62,9 @@ class _ScheduleEditorTopPanelState
                     width: 38,
                     height: 38,
                     child: BaseIconButton(
-                        icon: "assets/icons/arrow_right.svg", onTap: () {})),
+                        icon: "assets/icons/arrow_right.svg", onTap: () {
+                          ref.read(scheduleProvider).setNavigationDate(navigationDate.add(const Duration(days: 7)),context);
+                        })),
               ],
             ),
           ),
@@ -79,51 +83,72 @@ class _ScheduleEditorTopPanelState
                   backgroundFilled: true,
                   child: Builder(builder: (context) {
                     final items = ref.watch(searchProvider);
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(
-                              maxWidth: 350, maxHeight: 600),
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) {
-                              return Divider(
-                                endIndent: 10,
-                                indent: 10,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              );
-                            },
-                            shrinkWrap: true,
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return InkWell(
-                                onTap: () {
-                                  GetIt.I.get<Talker>().debug("msg");
-                                  ref.read(scheduleProvider).selectItem(item, context);
-                                },
-                                child: Text(
-                                  item.searchText,
-                                  style: Fa.smedium,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Column(
+                    return ref.watch(searchItemsProvider).when(
+                      data: (data) {
+                        return Row(
                           mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    searchPanelVisible = false;
-                                  });
-                                },
-                                icon: const Icon(Icons.close))
+                            AnimatedSize(
+                              alignment: Alignment.topCenter,
+                              duration: const Duration(milliseconds: 300),
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    maxWidth: 350, maxHeight: 600),
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) {
+                                    return Divider(
+                                      endIndent: 10,
+                                      indent: 10,
+                                      color:
+                                          Theme.of(context).colorScheme.onSurface,
+                                    );
+                                  },
+                                  shrinkWrap: true,
+                                  itemCount: items.length,
+                                  itemBuilder: (context, index) {
+                                    final item = items[index];
+                                    return InkWell(
+                                      onTap: () {
+                                        GetIt.I.get<Talker>().debug("msg");
+                                        ref
+                                            .read(scheduleProvider)
+                                            .selectItem(item, context);
+                                      },
+                                      child: Text(
+                                        item.searchText,
+                                        style: Fa.smedium,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        searchPanelVisible = false;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.close))
+                              ],
+                            )
                           ],
-                        )
-                      ],
+                        );
+                      },
+                      error: (e, o) {
+                        return Center(
+                          child: Text("Ошибка ${e.toString()} ${o.toString()}"),
+                        );
+                      },
+                      loading: () {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     );
                   }),
                 ),
