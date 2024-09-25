@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/core/api/data/schedule/request.dart';
@@ -14,7 +15,9 @@ part 'schedule_state.dart';
 
 class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
   ScheduleRequest? currentRequest;
+
   ScheduleBloc() : super(ScheduleInitial()) {
+    restartable();
     on<LoadItemSchedule>((event, emit) async {
       try {
         emit(ScheduleLoading());
@@ -26,7 +29,8 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       } catch (e, s) {
         emit(ScheduleFailed(e.toString(), s.toString()));
       }
-    });
+
+    },transformer: restartable());
     on<ReloadItemSchedule>((event, emit) async {
       try {
         if (currentRequest == null) {
@@ -40,7 +44,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       } catch (e, s) {
         emit(ScheduleFailed(e.toString(), s.toString()));
       }
-    });
+    },transformer: restartable());
   }
 }
 
@@ -54,8 +58,24 @@ class SupabaseApi {
       'cabinet': para.cabinet,
       'date': para.date.toString()
     }).select('*');
-    GetIt.I.get<Talker>().debug(response);
     return ActionResultOk(text: "Created");
+  }
+
+  static Future<ActionResult> editPara(Paras para) async {
+    final response = await GetIt.I.get<Supabase>().client.from('Paras').update({
+      'group': para.group,
+      'number': para.number,
+      'course': para.course,
+      'teacher': para.teacher,
+      'cabinet': para.cabinet,
+      'date': para.date.toString()
+    }).eq('id', para.id).select('*');
+    return ActionResultOk(text: "Edited");
+  }
+
+  static Future<ActionResult> removePara(Paras para) async {
+    final response = await GetIt.I.get<Supabase>().client.from('Paras').delete().eq('id', para.id).select('*');
+    return ActionResultOk(text: "Deleted");
   }
 
   static Future<List<Paras>> getParas(
@@ -77,7 +97,7 @@ class SupabaseApi {
       default:
     }
     final response = await request.order('number');
-    GetIt.I.get<Talker>().debug(response.toString());
+    GetIt.I.get<Talker>().warning(date);
     return parse<Paras>(response, Paras.fromMap).toList();
   }
 }

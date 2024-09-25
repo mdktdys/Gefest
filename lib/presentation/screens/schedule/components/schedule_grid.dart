@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/presentation/screens/schedule/components/empty_card.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../../core/api/models/models.dart';
 import 'schedule_card.dart';
@@ -42,7 +44,16 @@ class _ScheduleGridState extends ConsumerState<ScheduleGrid> {
               return Expanded(
                 child: Builder(builder: (context) {
                   if (isEmpty) {
-                    return  EmptyCard(date: currentDay,number: paratiming.number,);
+                    return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)),
+                        child: EmptyCard(
+                          date: currentDay,
+                          number: paratiming.number,
+                        ));
                   }
                   return Padding(
                     padding: const EdgeInsets.all(5.0),

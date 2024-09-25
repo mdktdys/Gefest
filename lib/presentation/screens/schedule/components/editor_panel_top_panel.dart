@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/extensions.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
+import 'package:gefest/presentation/screens/schedule/providers/search_provider.dart';
 import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -52,7 +55,9 @@ class _ScheduleEditorTopPanelState
                     child: BaseIconButton(
                       icon: "assets/icons/arrow_left.svg",
                       onTap: () {
-                        ref.read(scheduleProvider).setNavigationDate(navigationDate.subtract(const Duration(days: 7)),context);
+                        ref.read(scheduleProvider).setNavigationDate(
+                            navigationDate.subtract(const Duration(days: 7)),
+                            context);
                       },
                     )),
                 const SizedBox(
@@ -62,8 +67,11 @@ class _ScheduleEditorTopPanelState
                     width: 38,
                     height: 38,
                     child: BaseIconButton(
-                        icon: "assets/icons/arrow_right.svg", onTap: () {
-                          ref.read(scheduleProvider).setNavigationDate(navigationDate.add(const Duration(days: 7)),context);
+                        icon: "assets/icons/arrow_right.svg",
+                        onTap: () {
+                          ref.read(scheduleProvider).setNavigationDate(
+                              navigationDate.add(const Duration(days: 7)),
+                              context);
                         })),
               ],
             ),
@@ -74,84 +82,14 @@ class _ScheduleEditorTopPanelState
           Row(
             children: [
               PortalTarget(
-                visible: searchPanelVisible,
+                visible: ref.watch(searchPanelProvider).searchPanelVisible,
                 anchor: const Aligned(
                     follower: Alignment.topLeft,
                     target: Alignment.bottomLeft,
                     offset: Offset(0, 15)),
-                portalFollower: OutlineArea(
-                  backgroundFilled: true,
-                  child: Builder(builder: (context) {
-                    final items = ref.watch(searchProvider);
-                    return ref.watch(searchItemsProvider).when(
-                      data: (data) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AnimatedSize(
-                              alignment: Alignment.topCenter,
-                              duration: const Duration(milliseconds: 300),
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                    maxWidth: 350, maxHeight: 600),
-                                child: ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return Divider(
-                                      endIndent: 10,
-                                      indent: 10,
-                                      color:
-                                          Theme.of(context).colorScheme.onSurface,
-                                    );
-                                  },
-                                  shrinkWrap: true,
-                                  itemCount: items.length,
-                                  itemBuilder: (context, index) {
-                                    final item = items[index];
-                                    return InkWell(
-                                      onTap: () {
-                                        GetIt.I.get<Talker>().debug("msg");
-                                        ref
-                                            .read(scheduleProvider)
-                                            .selectItem(item, context);
-                                      },
-                                      child: Text(
-                                        item.searchText,
-                                        style: Fa.smedium,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        searchPanelVisible = false;
-                                      });
-                                    },
-                                    icon: const Icon(Icons.close))
-                              ],
-                            )
-                          ],
-                        );
-                      },
-                      error: (e, o) {
-                        return Center(
-                          child: Text("Ошибка ${e.toString()} ${o.toString()}"),
-                        );
-                      },
-                      loading: () {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    );
-                  }),
-                ),
+                portalFollower: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                    child: const SearchFlyoutPanel()),
                 child: SizedBox(
                   width: 160,
                   child: BaseTextField(
@@ -159,12 +97,14 @@ class _ScheduleEditorTopPanelState
                     onChanged: (p0) {
                       ref.read(searchProvider.notifier).search(p0);
                     },
+                    onTapOutside: (p0) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      ref.watch(searchPanelProvider).closePanel();
+                    },
                     hintText: "Поиск",
                     onTap: () {
                       if (!searchPanelVisible) {
-                        setState(() {
-                          searchPanelVisible = true;
-                        });
+                        ref.read(searchPanelProvider).openPanel();
                       }
                     },
                   ),
@@ -177,6 +117,103 @@ class _ScheduleEditorTopPanelState
           )
         ],
       ),
+    );
+  }
+}
+
+class SearchFlyoutPanel extends ConsumerStatefulWidget {
+  const SearchFlyoutPanel({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SearchFlyoutPanelState();
+}
+
+class _SearchFlyoutPanelState extends ConsumerState<SearchFlyoutPanel> {
+  @override
+  Widget build(BuildContext context) {
+    return OutlineArea(
+      backgroundFilled: true,
+      boxShadow: [
+        BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2),
+      ],
+      child: Builder(builder: (context) {
+        final items = ref.watch(searchProvider);
+        return ref.watch(searchItemsProvider).when(
+          data: (data) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedSize(
+                  alignment: Alignment.topCenter,
+                  duration: const Duration(milliseconds: 300),
+                  child: ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxWidth: 350, maxHeight: 600),
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          endIndent: 10,
+                          indent: 10,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        );
+                      },
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return Material(
+                          color: Theme.of(context).colorScheme.surface,
+                          clipBehavior: Clip.antiAlias,
+                          borderRadius: BorderRadius.circular(10),
+                          child: InkWell(
+                              hoverColor:
+                                  Theme.of(context).colorScheme.onSurface,
+                              onTap: () {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                ref
+                                    .read(scheduleProvider)
+                                    .selectItem(item, context);
+                                ref.read(searchPanelProvider).closePanel();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  item.searchText,
+                                  style: Fa.smedium,
+                                ),
+                              )),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          ref.read(searchPanelProvider).closePanel();
+                        },
+                        icon: const Icon(Icons.close))
+                  ],
+                )
+              ],
+            );
+          },
+          error: (e, o) {
+            return Center(
+              child: Text("Ошибка ${e.toString()} ${o.toString()}"),
+            );
+          },
+          loading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+      }),
     );
   }
 }

@@ -62,16 +62,12 @@ final timetableProvider = FutureProvider<List<ParaTime>>((ref) async {
   return parse<ParaTime>(res, ParaTime.fromMap).toList();
 });
 
-
-
 final cabinetsProvider = FutureProvider<List<Cabinet>>((ref) async {
   final supabaseClient = GetIt.I.get<Supabase>().client;
   final res = await supabaseClient.from('Cabinets').select('*');
 
   return parse<Cabinet>(res, Cabinet.fromMap).toList();
 });
-
-
 
 final coursesProvider = FutureProvider<List<Course>>((ref) async {
   final supabaseClient = GetIt.I.get<Supabase>().client;
@@ -80,11 +76,9 @@ final coursesProvider = FutureProvider<List<Course>>((ref) async {
   return parse<Course>(res, Course.fromMap).toList();
 });
 
-
 final groupsProvider = FutureProvider<List<Group>>((ref) async {
   final supabaseClient = GetIt.I.get<Supabase>().client;
   final res = await supabaseClient.from('Groups').select('*');
-  GetIt.I.get<Talker>().error(res);
 
   return parse<Group>(res, Group.fromMap).toList();
 });
@@ -114,9 +108,8 @@ final searchItemsProvider = FutureProvider<List<SearchItem>>((ref) async {
   final groups = groupsAsyncValue.value ?? [];
   final teachers = teachersAsyncValue.value ?? [];
 
-  return [...groups,...teachers];
+  return [...groups, ...teachers];
 });
-
 
 final searchProvider =
     StateNotifierProvider<SearchNotifier, List<SearchItem>>((ref) {
@@ -125,7 +118,11 @@ final searchProvider =
 
 class SearchNotifier extends StateNotifier<List<SearchItem>> {
   Ref ref;
-  SearchNotifier(this.ref) : super([]);
+  SearchNotifier(this.ref)
+      : super([
+          ...ref.watch(groupsProvider).value ?? [],
+          ...ref.watch(teachersProvider).value ?? [],
+        ]);
 
   void search(String text) {
     final filter = text.toLowerCase();

@@ -27,18 +27,19 @@ class ScheduleNotifier extends ChangeNotifier {
     required this.ref,
   });
 
-  DateTime navigationDate = DateTime(2024, 9, 9);
+  DateTime navigationDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   SearchItem? current_schedule_object;
 
-  setNavigationDate(DateTime date, BuildContext context){
+  setNavigationDate(DateTime date, BuildContext context) {
     navigationDate = date;
 
-    if(current_schedule_object != null){
-        ScheduleRequest request = ScheduleRequest(
-        type: current_schedule_object!.type,
-        date: navigationDate,
-        searchItemID: current_schedule_object!.searchID);
-        context.read<ScheduleBloc>().add(LoadItemSchedule(request));
+    if (current_schedule_object != null) {
+      ScheduleRequest request = ScheduleRequest(
+          type: current_schedule_object!.type,
+          date: getMondayDate(),
+          searchItemID: current_schedule_object!.searchID);
+      context.read<ScheduleBloc>().add(LoadItemSchedule(request));
     }
     notifyListeners();
   }
@@ -53,9 +54,7 @@ class ScheduleNotifier extends ChangeNotifier {
   selectItem(SearchItem item, BuildContext context) {
     current_schedule_object = item;
     ScheduleRequest request = ScheduleRequest(
-        type: item.type,
-        date: navigationDate,
-        searchItemID: item.searchID);
+        type: item.type, date: getMondayDate(), searchItemID: item.searchID);
     context.read<ScheduleBloc>().add(LoadItemSchedule(request));
   }
 
@@ -63,14 +62,27 @@ class ScheduleNotifier extends ChangeNotifier {
     return await SupabaseApi.addPara(para);
   }
 
-  openAddParaPanel(
+  Future<ActionResult> editPara(Paras para) async {
+    return await SupabaseApi.editPara(para);
+  }
+
+  Future<ActionResult> removePara(Paras para) async {
+    var res = await SupabaseApi.removePara(para);
+    scheduleBloc.add(ReloadItemSchedule());
+    return res;
+  }
+
+  openParaPanel(
       {required BuildContext context,
       int? number,
       DateTime? date,
       Group? group,
       Teacher? teacher,
-      Cabinet? cabinet}) {
-    showDialog(
+      Course? course,
+      int? paraID,
+      required ParaPanelOption option,
+      Cabinet? cabinet}) async {
+    final res = await showDialog(
         context: context,
         builder: (context) {
           return Material(
@@ -78,41 +90,54 @@ class ScheduleNotifier extends ChangeNotifier {
             child: Row(
               children: [
                 const DialogBlackout(),
-                AddParaPanel(
+                ParaPanel(
                   number: number,
+                  option: option,
                   date: date,
+                  course: course,
                   group: group,
                   teacher: teacher,
                   cabinet: cabinet,
+                  paraID: paraID,
                 ),
               ],
             ),
           );
         });
+    return res;
   }
 }
 
-class AddParaPanel extends ConsumerStatefulWidget {
+enum ParaPanelOption{
+  create,
+  edit,
+}
+
+class ParaPanel extends ConsumerStatefulWidget {
+  final ParaPanelOption option;
   final int? number;
   final DateTime? date;
   final Teacher? teacher;
   final Cabinet? cabinet;
   final Group? group;
   final Course? course;
-  const AddParaPanel(
+  final int? paraID;
+  const ParaPanel(
       {super.key,
       this.date,
+      required this.option,
       this.number,
       this.cabinet,
+      this.paraID,
       this.group,
       this.teacher,
       this.course});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddParaPanelState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ParaPanelState();
 }
 
-class _AddParaPanelState extends ConsumerState<AddParaPanel> {
+class _ParaPanelState extends ConsumerState<ParaPanel> {
   Teacher? teacher;
   Cabinet? cabinet;
   DateTime? date;
@@ -123,6 +148,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
   @override
   void initState() {
     super.initState();
+    course = widget.course;
     teacher = widget.teacher;
     cabinet = widget.cabinet;
     date = widget.date;
@@ -141,19 +167,19 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
           color: Theme.of(context).colorScheme.surface),
       child: Column(
         children: [
-          // Container(
-          //   padding: const EdgeInsets.all(20),
-          //   width: double.infinity,
-          //   decoration: BoxDecoration(
-          //       border: Border(
-          //           bottom: BorderSide(
-          //               color: Theme.of(context).colorScheme.onSurface))),
-          //   child: Text(
-          //     "Новая пара",
-          //     textAlign: TextAlign.left,
-          //     style: Fa.big,
-          //   ),
-          // ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.onSurface))),
+            child: Text(
+              widget.option == ParaPanelOption.create ? "Новая пара" : "Изменить пару",
+              textAlign: TextAlign.left,
+              style: Fa.big,
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(20),
             width: double.infinity,
@@ -164,29 +190,21 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Пара: ${widget.number}",
-                  textAlign: TextAlign.left,
-                  style: Fa.medium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
                 BaseTextFieldSelector(
                   initial: number != null ? SearchInt(value: number!) : null,
                   header: "Пара",
                   items: [1, 2, 3, 4, 5, 6]
                       .map((x) => SearchInt(value: x))
                       .toList(),
-                      itemSelected: (item){
-                        number = (item as SearchInt).value;
-                      },
+                  itemSelected: (item) {
+                    number = (item as SearchInt).value;
+                  },
                 ),
                 BaseTextFieldSelector(
                   initial: group,
                   header: "Группа",
                   items: ref.watch(groupsProvider).value ?? [],
-                  itemSelected: (item){
+                  itemSelected: (item) {
                     group = item;
                   },
                 ),
@@ -194,7 +212,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                   initial: course,
                   header: "Предмет",
                   items: ref.watch(coursesProvider).value ?? [],
-                  itemSelected: (item){
+                  itemSelected: (item) {
                     course = item;
                   },
                 ),
@@ -202,7 +220,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                   initial: teacher,
                   header: "Преподаватель",
                   items: ref.watch(teachersProvider).value ?? [],
-                  itemSelected: (item){
+                  itemSelected: (item) {
                     teacher = item;
                   },
                 ),
@@ -210,7 +228,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                   initial: cabinet,
                   header: "Кабинет",
                   items: ref.watch(cabinetsProvider).value ?? [],
-                  itemSelected: (item){
+                  itemSelected: (item) {
                     cabinet = item;
                   },
                 ),
@@ -227,7 +245,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
             child: Column(
               children: [
                 BaseElevatedButton(
-                  text: "Добавить",
+                  text: widget.option == ParaPanelOption.create ? "Добавить" : "Изменить",
                   onTap: () async {
                     if (group != null &&
                         number != null &&
@@ -236,16 +254,36 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                         cabinet != null &&
                         date != null) {
                       Paras para = Paras(
-                          id: -1,
+                          id: widget.paraID??-1,
                           group: group!.id,
                           number: number!,
                           course: course!.id,
                           teacher: teacher!.id,
                           cabinet: cabinet!.id,
                           date: date!);
-                      final res = await ref.watch(scheduleProvider).addPara(para);
-                      ref.watch(scheduleProvider).scheduleBloc.add(ReloadItemSchedule());
-                      context.pop();
+
+
+                      switch (widget.option) {
+                        case ParaPanelOption.create:
+                          final res =
+                          await ref.watch(scheduleProvider).addPara(para);
+                      ref
+                          .watch(scheduleProvider)
+                          .scheduleBloc
+                          .add(ReloadItemSchedule());
+                      context.pop(ActionResultOk(text: "Created"));
+                          break;
+                        case ParaPanelOption.edit:
+                          final res =
+                          await ref.watch(scheduleProvider).editPara(para);
+                      ref
+                          .watch(scheduleProvider)
+                          .scheduleBloc
+                          .add(ReloadItemSchedule());
+                      context.pop(ActionResultOk(text: "Edited"));
+                          break;
+                      }
+
                     } else {
                       ref.watch(messagesProvider).showMessage(
                           type: MesTypes.error,
@@ -262,7 +300,7 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
                 BaseOutlinedButton(
                   text: "Отмена",
                   onTap: () {
-                    context.pop();
+                    context.pop(ActionResultError(text: "Cancel"));
                   },
                 )
               ],
@@ -270,174 +308,6 @@ class _AddParaPanelState extends ConsumerState<AddParaPanel> {
           )
         ],
       ),
-    );
-  }
-}
-
-class BaseTextFieldSelector extends ConsumerStatefulWidget {
-  final Function? itemSelected;
-  final List<SearchItem> items;
-  final String? hint;
-  final String? header;
-  final SearchItem? initial;
-  const BaseTextFieldSelector(
-      {super.key,
-      this.hint,
-      this.itemSelected,
-      this.initial,
-      required this.items,
-      this.header});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _BaseTextFieldSelectorState();
-}
-
-class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
-  SearchItem? choosed;
-  TextEditingController controller = TextEditingController();
-  List<SearchItem> filtered = [];
-  bool field_activated = false;
-  bool fieldLocked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    filtered = widget.items;
-    choosed = widget.initial;
-
-    if (choosed != null) {
-      controller.text = choosed!.searchText;
-      fieldLocked = true;
-    }
-  }
-
-  _filterSearch(text) {
-    setState(() {
-      filtered = widget.items
-          .where((x) => x.searchText.toLowerCase().contains(text))
-          .toList();
-    });
-  }
-
-  _onSelect(SearchItem item) {
-    setState(() {
-      choosed = item;
-      controller.text = item.searchText;
-      fieldLocked = true;
-      widget.itemSelected?.call(choosed);
-    });
-  }
-
-  _clearField() {
-    setState(() {
-      choosed = null;
-      field_activated = false;
-      filtered = widget.items;
-      controller.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: BaseTextField(
-                locked: choosed != null ? true : false,
-                onTap: () {
-                  if (!field_activated && choosed == null) {
-                    setState(() {
-                      field_activated = true;
-                    });
-                  }
-                },
-                onChanged: (p0) => _filterSearch(p0.toLowerCase()),
-                controller: controller,
-                header: widget.header,
-                hintText: widget.hint,
-              ),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            SizedBox(
-              width: 48,
-              height: 48,
-              child: BaseIconButton(
-                icon: "assets/icons/clear.svg",
-                color: Theme.of(context).colorScheme.onSurface,
-                onTap: () {
-                  _clearField();
-                },
-              ),
-            )
-          ],
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        AnimatedSize(
-            alignment: Alignment.topCenter,
-            duration: const Duration(milliseconds: 300),
-            child: (choosed == null && field_activated)
-                ? ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 600),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: filtered.isEmpty
-                          ? SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                "Ничего не найдено",
-                                textAlign: TextAlign.center,
-                                style: Fa.smedium,
-                              ),
-                            )
-                          : ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return Divider(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  indent: 10,
-                                  endIndent: 10,
-                                );
-                              },
-                              shrinkWrap: true,
-                              itemCount: filtered.length,
-                              itemBuilder: (context, index) {
-                                final item = filtered[index];
-                                return Material(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  clipBehavior: Clip.antiAlias,
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: InkWell(
-                                      hoverColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      onTap: () {
-                                        _onSelect(item);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          item.searchText,
-                                          style: Fa.smedium,
-                                        ),
-                                      )),
-                                );
-                              },
-                            ),
-                    ),
-                  )
-                : const SizedBox.shrink())
-      ],
     );
   }
 }

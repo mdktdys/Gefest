@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gefest/core/api/api.dart';
 import 'package:go_router/go_router.dart';
 
 class DialogBlackout extends StatelessWidget {
@@ -11,7 +12,7 @@ class DialogBlackout extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          context.pop();
+          context.pop(ActionResultError(text: "Cancel"));
         },
         child: Container(
           width: double.infinity,
