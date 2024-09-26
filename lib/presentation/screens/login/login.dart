@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/auth/supabase_auth.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
-import 'package:gefest/presentation/shared/base_elevated_button.dart';
-import 'package:gefest/presentation/shared/outline_area.dart';
 import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';

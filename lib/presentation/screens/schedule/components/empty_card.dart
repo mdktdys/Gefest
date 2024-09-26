@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/api.dart';
+import 'package:gefest/presentation/screens/schedule/components/para_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/presentation/shared/base_icon_button.dart';
-import 'package:gefest/theme.dart';
 
 class EmptyCard extends ConsumerStatefulWidget {
   final int number;

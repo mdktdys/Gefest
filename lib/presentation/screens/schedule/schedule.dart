@@ -1,11 +1,7 @@
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/api.dart';
-import 'package:gefest/core/api/data/schedule/bloc/schedule_bloc.dart';
-import 'package:gefest/core/api/models/paras.dart';
 import 'package:gefest/core/extensions.dart';
 import 'package:gefest/presentation/screens/schedule/components/editor_panel_top_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
@@ -85,19 +81,25 @@ class _ScheduleViewState extends ConsumerState<ScheduleView> {
       children: [
         Row(
           children: [
-            const Text("${1}\n99:99\n99:99",style: TextStyle(color: Colors.transparent),),
+            const Text(
+              "${1}\n99:99\n99:99",
+              style: TextStyle(color: Colors.transparent),
+            ),
             Expanded(
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: widget.collection.map((dayOffset) {
-                    final date = widget.mondayDate.add(Duration(days: dayOffset));
+                    final date =
+                        widget.mondayDate.add(Duration(days: dayOffset));
                     return Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                             border: Border(
                                 right: BorderSide(
-                                    color: Theme.of(context).colorScheme.onSurface))),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface))),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,33 +124,46 @@ class _ScheduleViewState extends ConsumerState<ScheduleView> {
           ],
         ),
         Expanded(
-          child: Row(
-            children: [
-              Column(
-                children: ref
-                    .watch(timetableProvider)
-                    .value!
-                    .map((paraTime) => Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface))),
-                            child: Align(alignment: Alignment.center,child: Text("${paraTime.number}\n${paraTime.start}\n${paraTime.end}",textAlign: TextAlign.center,)),
-                          ),
-                        ))
-                    .toList(),
-              ),
-              Expanded(
-                child: ScheduleGrid(
-                    collection: widget.collection,
-                    mondayDate: widget.mondayDate,
-                    weekParas: widget.weekParas),
-              ),
-            ],
-          ),
+          child: Builder(builder: (context) {
+            return ref.watch(timetableProvider).when(data: (data) {
+              return Row(
+                children: [
+                  Column(
+                    children: data
+                        .map((paraTime) => Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface))),
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "${paraTime.number}\n${paraTime.start}\n${paraTime.end}",
+                                      textAlign: TextAlign.center,
+                                    )),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  Expanded(
+                    child: ScheduleGrid(
+                        collection: widget.collection,
+                        mondayDate: widget.mondayDate,
+                        weekParas: widget.weekParas),
+                  ),
+                ],
+              );
+            }, error: (error, o) {
+              return Center(
+                child: Text("Ошибка ${error.toString()} ${o.toString()}"),
+              );
+            }, loading: () {
+              return const CircularProgressIndicator();
+            });
+          }),
         ),
       ],
     );

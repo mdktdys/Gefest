@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/presentation/screens/schedule/components/empty_card.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../../core/api/models/models.dart';
 import 'schedule_card.dart';
@@ -34,35 +31,46 @@ class _ScheduleGridState extends ConsumerState<ScheduleGrid> {
             .where((paras) => paras.date == currentDay)
             .toList();
         return Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: ref.watch(timetableProvider).value!.map((paratiming) {
-              final parasInTime = dayParas
-                  .where((paras) => paras.number == paratiming.number)
-                  .toList();
-              bool isEmpty = parasInTime.isEmpty;
-              return Expanded(
-                child: Builder(builder: (context) {
-                  if (isEmpty) {
-                    return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)),
-                        child: EmptyCard(
-                          date: currentDay,
-                          number: paratiming.number,
-                        ));
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: ScheduleCard(parasInTime: parasInTime),
+          child: Builder(builder: (context) {
+            return ref.watch(timetableProvider).when(data: (data) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: data.map((paratiming) {
+                  final parasInTime = dayParas
+                      .where((paras) => paras.number == paratiming.number)
+                      .toList();
+                  bool isEmpty = parasInTime.isEmpty;
+                  return Expanded(
+                    child: Builder(builder: (context) {
+                      if (isEmpty) {
+                        return Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface)),
+                            child: EmptyCard(
+                              date: currentDay,
+                              number: paratiming.number,
+                            ));
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: ScheduleCard(parasInTime: parasInTime),
+                      );
+                    }),
                   );
-                }),
+                }).toList(),
               );
-            }).toList(),
-          ),
+            }, error: (error, o) {
+              return Center(
+                child: Text("Ошибка ${error.toString()} ${o.toString()}}"),
+              );
+            }, loading: () {
+              return const CircularProgressIndicator();
+            });
+          }),
         );
       }).toList(),
     );

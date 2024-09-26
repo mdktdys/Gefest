@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/api/models/paras.dart';
+import 'package:gefest/presentation/screens/schedule/components/para_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/presentation/shared/base_icon_button.dart';
 import 'package:gefest/theme.dart';
@@ -72,42 +73,62 @@ class _ScheduleCardParaState extends ConsumerState<ScheduleCardPara> {
                   width: 5,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: ref
-                          .watch(dataProvider)
-                          .getCourseById(widget.para.course)!
-                          .getColor()),
+                      color: ref.watch(dataProvider).getCourseById(widget.para.course)?.getColor()??Colors.transparent),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ref
-                                .watch(dataProvider)
-                                .getCourseById(widget.para.course)
-                                ?.fullname ??
-                            ref.watch(dataProvider).getCourseById(widget.para.course)?.name??"",
-                        style: Fa.medium,
-                      ),
-                      Text(
-                        ref
-                                .watch(dataProvider)
-                                .getTeacherById(widget.para.teacher)
-                                ?.name ??
-                            "Нет",
-                        style: Fa.smedium,
-                      ),
-                      Text(
-                          ref
-                                  .watch(dataProvider)
-                                  .getCabinetById(widget.para.cabinet)
-                                  ?.name ??
-                              "Нет",
-                          style: Fa.smedium),
-                    ]),
+                Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              ref
+                                      .watch(dataProvider)
+                                      .getCourseById(widget.para.course)
+                                      ?.fullname ??
+                                  ref.watch(dataProvider).getCourseById(widget.para.course)?.name??"",
+                              style: Fa.medium,
+                              overflow: TextOverflow.fade,
+                              softWrap: true,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              ref
+                                      .watch(dataProvider)
+                                      .getTeacherById(widget.para.teacher)
+                                      ?.name ??
+                                  "Нет",
+                                  overflow: TextOverflow.fade,
+                              style: Fa.smedium,
+                              softWrap: true,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                ref
+                                        .watch(dataProvider)
+                                        .getCabinetById(widget.para.cabinet)
+                                        ?.name ??
+                                    "Нет",
+                                    overflow: TextOverflow.fade,
+                                    softWrap: true,
+                                style: Fa.smedium),
+                          ),
+                        ),
+                      ]),
+                ),
               ],
             ),
             hovered

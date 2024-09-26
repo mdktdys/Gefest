@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sidebarx/sidebarx.dart';
 
-import '../../shared/shared.dart';
 
 class DashBoardScreen extends ConsumerStatefulWidget {
   const DashBoardScreen({super.key});

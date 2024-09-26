@@ -1,14 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gefest/core/api/models/cabinet.dart';
-import 'package:gefest/core/api/models/course.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 import '../models/models.dart';
-import '../models/search.dart';
 
 final dataProvider = Provider<DataProvider>((ref) {
   return DataProvider(ref: ref);

@@ -8,8 +8,6 @@ import 'package:gefest/core/extensions.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/presentation/screens/schedule/providers/search_provider.dart';
 import 'package:gefest/theme.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 import '../../../shared/shared.dart';
 
@@ -71,6 +69,19 @@ class _ScheduleEditorTopPanelState
                         onTap: () {
                           ref.read(scheduleProvider).setNavigationDate(
                               navigationDate.add(const Duration(days: 7)),
+                              context);
+                        })),
+                const SizedBox(
+                  width: 10,
+                ),
+                SizedBox(
+                    width: 38,
+                    height: 38,
+                    child: BaseIconButton(
+                        icon: "assets/icons/refresh.svg",
+                        onTap: () {
+                          ref.read(scheduleProvider).setNavigationDate(
+                              navigationDate.add(const Duration(days: 0)),
                               context);
                         })),
               ],

@@ -1,26 +1,22 @@
-import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gefest/core/api/api.dart';
-import 'package:gefest/core/api/data/schedule/request.dart';
-import 'package:gefest/core/api/data/schedule/types.dart';
-import 'package:gefest/core/api/models/converter.dart';
-import 'package:gefest/core/api/models/paras.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'schedule_event.dart';
 part 'schedule_state.dart';
 
-class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
+class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   ScheduleRequest? currentRequest;
 
-  ScheduleBloc() : super(ScheduleInitial()) {
+  ScheduleBloc() : super(const ScheduleInitial()) {
     restartable();
     on<LoadItemSchedule>((event, emit) async {
       try {
-        emit(ScheduleLoading());
+        emit(const ScheduleLoading());
         final request = event.request;
         currentRequest = event.request;
         final paras = await SupabaseApi.getParas(
@@ -29,12 +25,11 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       } catch (e, s) {
         emit(ScheduleFailed(e.toString(), s.toString()));
       }
-
-    },transformer: restartable());
+    }, transformer: restartable());
     on<ReloadItemSchedule>((event, emit) async {
       try {
         if (currentRequest == null) {
-          emit(ScheduleInitial());
+          emit(const ScheduleInitial());
           return;
         }
         final request = currentRequest!;
@@ -44,8 +39,16 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       } catch (e, s) {
         emit(ScheduleFailed(e.toString(), s.toString()));
       }
-    },transformer: restartable());
+    }, transformer: restartable());
   }
+
+  @override
+  ScheduleState fromJson(Map<String, dynamic> json) =>
+      scheduleStateFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(ScheduleState state) =>
+      scheduleStateToJson(state);
 }
 
 class SupabaseApi {
@@ -62,19 +65,31 @@ class SupabaseApi {
   }
 
   static Future<ActionResult> editPara(Paras para) async {
-    final response = await GetIt.I.get<Supabase>().client.from('Paras').update({
-      'group': para.group,
-      'number': para.number,
-      'course': para.course,
-      'teacher': para.teacher,
-      'cabinet': para.cabinet,
-      'date': para.date.toString()
-    }).eq('id', para.id).select('*');
+    final response = await GetIt.I
+        .get<Supabase>()
+        .client
+        .from('Paras')
+        .update({
+          'group': para.group,
+          'number': para.number,
+          'course': para.course,
+          'teacher': para.teacher,
+          'cabinet': para.cabinet,
+          'date': para.date.toString()
+        })
+        .eq('id', para.id)
+        .select('*');
     return ActionResultOk(text: "Edited");
   }
 
   static Future<ActionResult> removePara(Paras para) async {
-    final response = await GetIt.I.get<Supabase>().client.from('Paras').delete().eq('id', para.id).select('*');
+    final response = await GetIt.I
+        .get<Supabase>()
+        .client
+        .from('Paras')
+        .delete()
+        .eq('id', para.id)
+        .select('*');
     return ActionResultOk(text: "Deleted");
   }
 
