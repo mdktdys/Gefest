@@ -67,6 +67,34 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                         );
                       },
                       label: 'Home'),
+                  SidebarXItem(
+                      iconBuilder: (selected, hovered) {
+                        return SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: BaseIconButton(
+                            icon: "assets/icons/persons.svg",
+                            onTap: () {
+                              context.go('/teachers');
+                            },
+                          ),
+                        );
+                      },
+                      label: 'teachers'),
+                    SidebarXItem(
+                      iconBuilder: (selected, hovered) {
+                        return SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: BaseIconButton(
+                            icon: "assets/icons/persons.svg",
+                            onTap: () {
+                              context.go('/groups');
+                            },
+                          ),
+                        );
+                      },
+                      label: 'groups'),
                 ],
               ),
               Expanded(child: widget.child)

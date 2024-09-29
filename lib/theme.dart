@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Ca {
@@ -27,6 +28,18 @@ final darkTheme = ThemeData.dark().copyWith(
         surface: const Color(0xFF1D2126),
         onSurface: const Color(0xFF282c31)));
 
+
+final lightTheme = ThemeData.light().copyWith(
+    scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+    canvasColor: const Color(0xFFFFFFFF),
+    colorScheme: ColorScheme.fromSeed(
+
+        primary: const Color(0xff2196f3),
+        seedColor: const Color(0xff2196f3),
+        surface: const Color(0xFFFFFFFF),
+        onSurface: const Color(0xFF282c31)));
+
+
 extension ColorsExt on Color {
   MaterialColor toMaterialColor() {
     final int red = this.red;
@@ -47,5 +60,23 @@ extension ColorsExt on Color {
     };
 
     return MaterialColor(value, shades);
+  }
+}
+
+final themeProvider = ChangeNotifierProvider<ThemeNotifier>((ref) {
+  return ThemeNotifier();
+});
+
+class ThemeNotifier extends ChangeNotifier {
+  ThemeData theme = darkTheme;
+
+  dark(){
+    theme = darkTheme;
+    notifyListeners();
+  }
+
+  light(){
+    theme = lightTheme;
+    notifyListeners();
   }
 }

@@ -35,14 +35,23 @@ void main() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   GetIt.I.registerSingleton<PackageInfo>(packageInfo);
 
-  runApp(ProviderScope(
+  runApp(const ProviderScope(
     child: Portal(
-      child: MaterialApp.router(
+      child: ThemeApp()
+  )));
+}
+
+class ThemeApp extends ConsumerWidget {
+  const ThemeApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
           title: "Dev Замены уксивтика",
           routerConfig: router,
           color: Colors.blue,
           debugShowCheckedModeBanner: false,
-          theme: darkTheme),
-    ),
-  ));
+          theme: ref.watch(themeProvider).theme);
+    
+  }
 }

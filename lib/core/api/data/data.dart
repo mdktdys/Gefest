@@ -74,7 +74,7 @@ final coursesProvider = FutureProvider<List<Course>>((ref) async {
 
 final groupsProvider = FutureProvider<List<Group>>((ref) async {
   final supabaseClient = GetIt.I.get<Supabase>().client;
-  final res = await supabaseClient.from('Groups').select('*');
+  final res = await supabaseClient.from('Groups').select('*').order('name');
 
   return parse<Group>(res, Group.fromMap).toList();
 });
