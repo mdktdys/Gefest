@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/theme.dart';
 
-class BaseElevatedButton extends StatefulWidget {
+class BaseElevatedButton extends ConsumerStatefulWidget {
   final String? text;
   final Function()? onTap;
   final double? width;
@@ -10,10 +12,11 @@ class BaseElevatedButton extends StatefulWidget {
       {super.key, this.onTap, this.text, this.width, this.height});
 
   @override
-  State<BaseElevatedButton> createState() => _BaseElevatedButtonState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _BaseElevatedButtonState();
 }
 
-class _BaseElevatedButtonState extends State<BaseElevatedButton> {
+class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
   bool loading = false;
 
   @override
@@ -31,7 +34,15 @@ class _BaseElevatedButtonState extends State<BaseElevatedButton> {
           setState(() {
             loading = true;
           });
-          await widget.onTap?.call();
+          try {
+            await widget.onTap?.call();
+          } catch (e) {
+            ref.watch(messagesProvider).showMessage(
+                type: MesTypes.error,
+                header: "Ошибка",
+                body: e.toString(),
+                context: context);
+          }
           setState(() {
             loading = false;
           });
@@ -42,14 +53,14 @@ class _BaseElevatedButtonState extends State<BaseElevatedButton> {
             padding: const EdgeInsets.all(10),
             child: loading
                 ? const Center(
-                  child: SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
+                    child: SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
                         color: Colors.white,
                       ),
-                  ),
-                )
+                    ),
+                  )
                 : Text(
                     widget.text ?? "",
                     textAlign: TextAlign.center,
