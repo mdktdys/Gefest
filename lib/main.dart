@@ -1,7 +1,9 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/core/api/data/schedule/repository/test.dart';
 import 'package:gefest/routes.dart';
 import 'package:gefest/secrets.dart';
 import 'package:gefest/theme.dart';
@@ -16,6 +18,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final chopper = ChopperClient(
+      baseUrl: Uri.parse("https://api.uksivt.xyz"),
+      services: [
+        FastApiService.create()
+      ],
+    );
+
+  GetIt.I.registerSingleton<ChopperClient>(chopper);
   
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: kIsWeb

@@ -22,7 +22,6 @@ final darkTheme = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: const Color(0xFF1D2126),
     canvasColor: const Color(0xFF1D2126),
     colorScheme: ColorScheme.fromSeed(
-
         primary: const Color(0xff2196f3),
         seedColor: const Color(0xff2196f3),
         surface: const Color(0xFF1D2126),
@@ -30,10 +29,10 @@ final darkTheme = ThemeData.dark().copyWith(
 
 
 final lightTheme = ThemeData.light().copyWith(
+
     scaffoldBackgroundColor: const Color(0xFFFFFFFF),
     canvasColor: const Color(0xFFFFFFFF),
     colorScheme: ColorScheme.fromSeed(
-
         primary: const Color(0xff2196f3),
         seedColor: const Color(0xff2196f3),
         surface: const Color(0xFFFFFFFF),
@@ -69,6 +68,15 @@ final themeProvider = ChangeNotifierProvider<ThemeNotifier>((ref) {
 
 class ThemeNotifier extends ChangeNotifier {
   ThemeData theme = darkTheme;
+
+  isDark(){
+    return theme == darkTheme? true : false;
+  }
+
+  toggle(){
+    theme = isDark()? lightTheme : darkTheme;
+    notifyListeners();
+  }
 
   dark(){
     theme = darkTheme;

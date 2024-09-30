@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/auth/supabase_auth.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
+import 'package:gefest/presentation/shared/theme_button.dart';
 import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -34,9 +35,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: const EdgeInsets.all(20),
             child: Align(
               alignment: Alignment.bottomRight,
-              child: Text(
-                "build: ${GetIt.I.get<PackageInfo>().buildNumber}",
-                style: Fa.smallMono,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: ThemeButton(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  Text(
+                    "build: ${GetIt.I.get<PackageInfo>().buildNumber}",
+                    style: Fa.smallMono,
+                  ),
+                ],
               ),
             ),
           ),

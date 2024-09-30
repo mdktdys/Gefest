@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/presentation/shared/theme_button.dart';
 import 'package:gefest/theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -46,6 +47,9 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                           height: 44,
                           child: BaseIconButton(
                             icon: "assets/icons/home.svg",
+                            color: selected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
                               context.go('/dashboard');
                             },
@@ -60,6 +64,9 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                           height: 44,
                           child: BaseIconButton(
                             icon: "assets/icons/calendar.svg",
+                            color: selected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
                               context.go('/schedule');
                             },
@@ -74,6 +81,9 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                           height: 44,
                           child: BaseIconButton(
                             icon: "assets/icons/persons.svg",
+                            color: selected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
                               context.go('/teachers');
                             },
@@ -81,13 +91,16 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                         );
                       },
                       label: 'teachers'),
-                    SidebarXItem(
+                  SidebarXItem(
                       iconBuilder: (selected, hovered) {
                         return SizedBox(
                           width: 44,
                           height: 44,
                           child: BaseIconButton(
                             icon: "assets/icons/persons.svg",
+                            color: selected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
                               context.go('/groups');
                             },
@@ -95,6 +108,18 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                         );
                       },
                       label: 'groups'),
+                ],
+                footerItems: [
+                  SidebarXItem(
+                      iconBuilder: (selected, hovered) {
+                        return SizedBox(
+                            width: 44,
+                            height: 44,
+                            child: ThemeButton(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ));
+                      },
+                      label: 'Theme'),
                 ],
               ),
               Expanded(child: widget.child)
