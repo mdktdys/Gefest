@@ -11,12 +11,12 @@ DockerContainerInfo _$DockerContainerInfoFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       status: json['status'] as String,
       image: (json['image'] as List<dynamic>).map((e) => e as String).toList(),
-      startedAt: json['startedAt'] == null
+      startedAt: json['started_at'] == null
           ? null
-          : DateTime.parse(json['startedAt'] as String),
-      finishedAt: json['finishedAt'] == null
+          : DateTime.parse(json['started_at'] as String),
+      finishedAt: json['finished_at'] == null
           ? null
-          : DateTime.parse(json['finishedAt'] as String),
+          : DateTime.parse(json['finished_at'] as String),
     );
 
 Map<String, dynamic> _$DockerContainerInfoToJson(
@@ -25,8 +25,8 @@ Map<String, dynamic> _$DockerContainerInfoToJson(
       'name': instance.name,
       'status': instance.status,
       'image': instance.image,
-      'startedAt': instance.startedAt?.toIso8601String(),
-      'finishedAt': instance.finishedAt?.toIso8601String(),
+      'started_at': instance.startedAt?.toIso8601String(),
+      'finished_at': instance.finishedAt?.toIso8601String(),
     };
 
 DockerInfo _$DockerInfoFromJson(Map<String, dynamic> json) => DockerInfo(
