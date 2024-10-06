@@ -20,7 +20,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final chopper = ChopperClient(
-      baseUrl: Uri.parse("https://api.uksivt.xyz"),
+    interceptors: [MyRequestInterceptor(),HttpLoggingInterceptor()],
+      baseUrl: Uri.parse(API_URL),
       services: [
         FastApiService.create()
       ],

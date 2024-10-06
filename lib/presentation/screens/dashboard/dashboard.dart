@@ -39,14 +39,15 @@ class _DashBoardScreenState extends ConsumerState<DashBoardScreen> {
               height: 5,
             ),
             Builder(builder: (context) {
-              return ref.watch(testProvider).when(data: (data){
-                  return Column(
-                          children: data!
-                              .map((e) => Text(e.name))
-                              .toList());
-              },error: (e,o){
-                return Center(child: Text(e.toString()),);
-              },loading: (){
+              return ref.watch(testProvider).when(data: (data) {
+                return Column(
+                    children:
+                        data!.containers.map((e) => Text(e.name)).toList());
+              }, error: (e, o) {
+                return Center(
+                  child: Text(e.toString()),
+                );
+              }, loading: () {
                 return CircularProgressIndicator();
               });
             }),
