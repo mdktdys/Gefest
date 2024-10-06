@@ -43,28 +43,45 @@ final router = GoRouter(
         routes: [
           GoRoute(
             path: '/dashboard',
-            builder: (context, state) {
-              return const DashBoardScreen();
+            pageBuilder: (context, state) {
+              return transitionPage(state,DashBoardScreen());
             },
           ),
           GoRoute(
             path: '/schedule',
-            builder: (context, state) {
-              return const ScheduleScreen();
+            pageBuilder: (context, state) {
+              return transitionPage(state,ScheduleScreen());
             },
           ),
           GoRoute(
             path: '/teachers',
-            builder: (context, state) {
-              return const TeachersScreen();
+            pageBuilder: (context, state) {
+              return transitionPage(state, TeachersScreen());
             },
           ),
           GoRoute(
             path: '/groups',
-            builder: (context, state) {
-              return const GroupsScreen();
+            pageBuilder: (context, state) {
+              return transitionPage(state, GroupsScreen());
             },
           ),
         ]),
   ],
 );
+
+
+CustomTransitionPage transitionPage(state,page) {
+  return CustomTransitionPage(
+      key: state.pageKey,
+      child: page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        // Change the opacity of the screen using a Curve based on the the animation's
+        // value
+        return FadeTransition(
+          opacity:
+              CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+          child: child,
+        );
+      },
+    );
+}
