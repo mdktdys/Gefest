@@ -1,89 +1,98 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:core';
 import 'package:chopper/chopper.dart';
+
 import 'package:gefest/core/api/api.dart';
+import 'package:gefest/core/api/models/DTO/containers.dart';
 import 'package:gefest/secrets.dart';
 
 part 'test.chopper.dart';
 
-const apiHeaders = {"X-API-KEY": API_KEY};
-
 class MyRequestInterceptor implements Interceptor {
-  
   MyRequestInterceptor();
-  
+
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
-    final request = applyHeader(chain.request, 'X-API-KEY', API_KEY);
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
+    final request = applyHeaders(chain.request,
+        {'X-API-KEY': API_KEY, 'Access-Control-Allow-Origin': '*'});
     return chain.proceed(request);
   }
 }
 
 @ChopperApi(baseUrl: "/api/v1/")
 abstract class FastApiService extends ChopperService {
-  static FastApiService create([ChopperClient? client]) => 
+  static FastApiService create([ChopperClient? client]) =>
       _$FastApiService(client);
 
-
-  @Get(path: "/groups",headers: apiHeaders)
+  @Get(path: "/groups/")
   Future<Response<List<Group>>> getGroups();
 
-
   @Get(path: "/parser/containers")
-  Future<Response<DockerContainersList>> getContainersList();
+  Future<Response<DockerInfo>> getContainersList();
 }
 
-class DockerContainersList {
-  final List<DockerContainerInfo> containers;
 
-  DockerContainersList({required this.containers});
+typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 
-  factory DockerContainersList.fromJson(List<dynamic> json) {
-    List<DockerContainerInfo> containerList = json
-        .map((container) => DockerContainerInfo.fromJson(container))
-        .toList();
+class JsonSerializableConverter extends JsonConverter {
+  final Map<Type, JsonFactory> factories;
 
-    return DockerContainersList(containers: containerList);
+  const JsonSerializableConverter(this.factories);
+
+  T? _decodeMap<T>(Map<String, dynamic> values) {
+    /// Get jsonFactory using Type parameters
+    /// if not found or invalid, throw error or return null
+    final jsonFactory = factories[T];
+    if (jsonFactory == null || jsonFactory is! JsonFactory<T>) {
+      /// throw serializer not found error;
+      return null;
+    }
+
+    return jsonFactory(values);
   }
 
-  List<Map<String, dynamic>> toJson() {
-    return containers.map((container) => container.toJson()).toList();
+  List<T> _decodeList<T>(Iterable values) =>
+      values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
+
+  dynamic _decode<T>(entity) {
+    if (entity is Iterable) return _decodeList<T>(entity as List);
+
+    if (entity is Map) return _decodeMap<T>(entity as Map<String, dynamic>);
+
+    return entity;
+  }
+
+  @override
+  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
+    Response response,
+  ) async {
+    // use [JsonConverter] to decode json
+    final jsonRes = await super.convertResponse(response);
+
+    return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
+  }
+
+  @override
+  // all objects should implements toJson method
+  // ignore: unnecessary_overrides
+  Request convertRequest(Request request) => super.convertRequest(request);
+
+  @override
+  FutureOr<Response> convertError<ResultType, Item>(Response response) async {
+    // use [JsonConverter] to decode json
+    final jsonRes = await super.convertError(response);
+    return jsonRes;
+    // return jsonRes.copyWith<ResourceEr>(
+    //   body: ResourceError.fromJsonFactory(jsonRes.body),
+    // );
   }
 }
 
-class DockerContainerInfo {
-  final String name;
-  final String status;
-  final List<String> image;
-  final DateTime startedAt;
-  final DateTime? finishedAt;
-
-  DockerContainerInfo({
-    required this.name,
-    required this.status,
-    required this.image,
-    required this.startedAt,
-    this.finishedAt,
-  });
-
-  factory DockerContainerInfo.fromJson(Map<String, dynamic> json) {
-    return DockerContainerInfo(
-      name: json['name'],
-      status: json['status'],
-      image: List<String>.from(json['image']),
-      startedAt: DateTime.parse(json['started_at']),
-      finishedAt: json['finished_at'] != null
-          ? DateTime.parse(json['finished_at'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'status': status,
-      'image': image,
-      'started_at': startedAt.toIso8601String(),
-      'finished_at': finishedAt?.toIso8601String(),
-    };
-  }
-}
+// List<T> parse<T>(
+//         Map<String, dynamic> data, T Function(Map<String, dynamic>) builder) {
+//           log(data.toString());
+//           final res = List.generate(data.length, (i) => builder(data[i]));
+//           return res;
+//         }

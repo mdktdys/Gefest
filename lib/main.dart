@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/schedule/repository/test.dart';
+import 'package:gefest/core/api/models/DTO/containers.dart';
 import 'package:gefest/routes.dart';
 import 'package:gefest/secrets.dart';
 import 'package:gefest/theme.dart';
@@ -20,6 +21,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final chopper = ChopperClient(
+    converter: JsonSerializableConverter(
+      {
+        DockerInfo: DockerInfo.fromJson
+      }
+    ),
     interceptors: [MyRequestInterceptor(),HttpLoggingInterceptor()],
       baseUrl: Uri.parse(API_URL),
       services: [

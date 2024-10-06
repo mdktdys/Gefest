@@ -2,6 +2,7 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/schedule/repository/test.dart';
+import 'package:gefest/presentation/screens/dashboard/services_block.dart';
 import 'package:gefest/presentation/shared/outline_area.dart';
 import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
@@ -19,176 +20,152 @@ class DashBoardScreen extends ConsumerStatefulWidget {
 class _DashBoardScreenState extends ConsumerState<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text(
-            //   "Обзор",
-            //   style: Fa.big,
-            // ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Инфраструктура",
-              style: Fa.big,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Builder(builder: (context) {
-              return ref.watch(testProvider).when(data: (data) {
-                return Column(
-                    children:
-                        data!.containers.map((e) => Text(e.name)).toList());
-              }, error: (e, o) {
-                return Center(
-                  child: Text(e.toString()),
-                );
-              }, loading: () {
-                return CircularProgressIndicator();
-              });
-            }),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                    child: AspectRatio(
-                  aspectRatio: 1 / 1,
-                  child: OutlineArea(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Telegram",
-                        style: Fa.big,
-                      ),
-                      Text(
-                        "Online",
-                        style: Fa.smedium.copyWith(color: Colors.green),
-                      )
-                    ],
-                  )),
-                )),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "PostgreSQL",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    )
-                  ],
-                ))),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Rabbit MQ",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    )
-                  ],
-                ))),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Fast API",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    )
-                  ],
-                ))),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Redis",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    )
-                  ],
-                ))),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Parser",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    ),
-                    Text(
-                      "Последняя проверка ??:??",
-                      style: Fa.smedium,
-                    )
-                  ],
-                ))),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                    child: OutlineArea(
-                        child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Supabase",
-                      style: Fa.big,
-                    ),
-                    Text(
-                      "Online",
-                      style: Fa.smedium.copyWith(color: Colors.green),
-                    )
-                  ],
-                ))),
-              ],
-            ),
-          ],
-        ));
-  }
+    return ListView(
+      padding: const EdgeInsets.all(40),
+            children: [
+              // Text(
+              //   "Обзор",
+              //   style: Fa.big,
+              // ),
+              const SizedBox(
+                height: 20,
+              ),
+              ServicesBlock()]);}}
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Expanded(
+              //         child: AspectRatio(
+              //       aspectRatio: 1 / 1,
+              //       child: OutlineArea(
+              //           child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Text(
+              //             "Telegram",
+              //             style: Fa.big,
+              //           ),
+              //           Text(
+              //             "Online",
+              //             style: Fa.smedium.copyWith(color: Colors.green),
+              //           )
+              //         ],
+              //       )),
+              //     )),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "PostgreSQL",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         )
+              //       ],
+              //     ))),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Rabbit MQ",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         )
+              //       ],
+              //     ))),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Fast API",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         )
+              //       ],
+              //     ))),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Redis",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         )
+              //       ],
+              //     ))),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Parser",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         ),
+              //         Text(
+              //           "Последняя проверка ??:??",
+              //           style: Fa.smedium,
+              //         )
+              //       ],
+              //     ))),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //         child: OutlineArea(
+              //             child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           "Supabase",
+              //           style: Fa.big,
+              //         ),
+              //         Text(
+              //           "Online",
+              //           style: Fa.smedium.copyWith(color: Colors.green),
+              //         )
+              //       ],
+              //     ))),
+              //   ],
+              // ),
 
   // @override
   // Widget build(BuildContext context) {
@@ -282,4 +259,4 @@ class _DashBoardScreenState extends ConsumerState<DashBoardScreen> {
   //         ));
   //   }
   // }
-}
+
