@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/presentation/shared/theme_button.dart';
@@ -19,6 +21,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
   final SidebarXController controller =
       SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     if (MediaQuery.sizeOf(context).width > 640) {
@@ -41,7 +44,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                                     Theme.of(context).colorScheme.onSurface)))),
                 items: [
                   SidebarXItem(
-                      iconBuilder: (selected, hovered) {
+                      iconBuilder: (selected, __) {
                         return SizedBox(
                           width: 44,
                           height: 44,
@@ -51,6 +54,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                                 ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
+                              controller.selectIndex(0);
                               context.go('/dashboard');
                             },
                           ),
@@ -58,7 +62,9 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                       },
                       label: 'Home'),
                   SidebarXItem(
+                    selectable: false,
                       iconBuilder: (selected, hovered) {
+                        log(selected.toString());
                         return SizedBox(
                           width: 44,
                           height: 44,
@@ -68,6 +74,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                                 ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.onSurface,
                             onTap: () {
+                              controller.selectIndex(1);
                               context.go('/schedule');
                             },
                           ),
