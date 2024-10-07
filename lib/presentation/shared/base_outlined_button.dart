@@ -6,8 +6,9 @@ class BaseOutlinedButton extends StatelessWidget {
   final Function()? onTap;
   final double? width;
   final double? height;
+  final Color? color;
   const BaseOutlinedButton(
-      {super.key, this.onTap, this.text, this.width, this.height});
+      {super.key, this.onTap, this.text, this.width, this.height, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class BaseOutlinedButton extends StatelessWidget {
       color: Colors.transparent,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(width: 2,color: Theme.of(context).colorScheme.onSurface)),
+          side: BorderSide(width: 1,color: color??Theme.of(context).colorScheme.onSurface )),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onHover: (value) {},

@@ -26,36 +26,74 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
       child: Column(
         children: [
           const ScheduleEditorTopPanel(),
-          Expanded(
-              child: BlocBuilder<ScheduleBloc, ScheduleState>(
-            key: UniqueKey(),
-            builder: (context, state) {
-              if (state is ScheduleFailed) {
-                return Center(
-                  child: Text("Ошибка ${state.error} ${state.trace}"),
-                );
-              }
-              if (state is ScheduleLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is ScheduleSuccess) {
-                var collection = [0, 1, 2, 3, 4, 5];
-                final weekParas = state.paras;
-                GetIt.I.get<Talker>().info(weekParas);
-                final mondayDate = ref.watch(scheduleProvider).getMondayDate();
-                return ScheduleView(
-                    collection: collection,
-                    mondayDate: mondayDate,
-                    weekParas: weekParas);
-              }
-              return const Center(child: Text("Выберите объект расписания"));
-            },
-          ))
+          Builder(builder: (context) {
+            switch (ref.watch(scheduleProvider).view) {
+              case ScheduleViews.month:
+                return MonthView(ref: ref,);
+              case ScheduleViews.monthly:
+                return MonthlyView();
+            }
+          }),
+          // SizedBox(height: 20,),
+          // MonthView(ref: ref)
         ],
       ),
     );
+  }
+}
+
+class MonthlyView extends ConsumerStatefulWidget {
+  const MonthlyView({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MonthlyViewState();
+}
+
+class _MonthlyViewState extends ConsumerState<MonthlyView> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class MonthView extends StatelessWidget {
+  const MonthView({
+    super.key,
+    required this.ref,
+  });
+
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: BlocBuilder<ScheduleBloc, ScheduleState>(
+      key: UniqueKey(),
+      builder: (context, state) {
+        if (state is ScheduleFailed) {
+          return Center(
+            child: Text("Ошибка ${state.error} ${state.trace}"),
+          );
+        }
+        if (state is ScheduleLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (state is ScheduleSuccess) {
+          var collection = [0, 1, 2, 3, 4, 5];
+          final weekParas = state.paras;
+          GetIt.I.get<Talker>().info(weekParas);
+          final mondayDate = ref.watch(scheduleProvider).getMondayDate();
+          return ScheduleView(
+              collection: collection,
+              mondayDate: mondayDate,
+              weekParas: weekParas);
+        }
+        return const Center(child: Text("Выберите объект расписания"));
+      },
+    ));
   }
 }
 

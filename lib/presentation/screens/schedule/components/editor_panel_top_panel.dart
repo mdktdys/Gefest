@@ -84,6 +84,30 @@ class _ScheduleEditorTopPanelState
                               navigationDate.add(const Duration(days: 0)),
                               context);
                         })),
+                const SizedBox(
+                  width: 10,
+                ),
+                // SizedBox(
+                //     width: 38,
+                //     height: 38,
+                //     child: BaseIconButton(
+                //         icon: "assets/icons/refresh.svg",
+                //         onTap: () {
+                //           ref.read(scheduleProvider).setNavigationDate(
+                //               navigationDate.add(const Duration(days: 0)),
+                //               context);
+                //         })),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                BaseOutlinedButton(
+                  color: const Color.fromARGB(255, 143, 39, 32),
+                  width: 100,
+                  text: "Вид",
+                  onTap: () {
+                    ref.read(scheduleProvider).switchView();
+                  },
+                )
               ],
             ),
           ),

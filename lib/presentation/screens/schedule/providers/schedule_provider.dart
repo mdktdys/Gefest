@@ -8,11 +8,17 @@ import 'package:gefest/presentation/screens/schedule/components/para_panel.dart'
 import '../../../../core/api/api.dart';
 import '../../../shared/shared.dart';
 
+enum ScheduleViews{
+  month,
+  monthly,
+}
+
 final scheduleProvider = ChangeNotifierProvider<ScheduleNotifier>((ref) {
   return ScheduleNotifier(ref: ref);
 });
 
 class ScheduleNotifier extends ChangeNotifier {
+  ScheduleViews view = ScheduleViews.month;
   ScheduleBloc scheduleBloc = ScheduleBloc();
   Ref ref;
   ScheduleNotifier({
@@ -66,6 +72,20 @@ class ScheduleNotifier extends ChangeNotifier {
     var res = await SupabaseApi.removePara(para);
     scheduleBloc.add(ReloadItemSchedule());
     return res;
+  }
+
+
+  switchView(){
+    switch (view) {
+      case ScheduleViews.month:
+        view = ScheduleViews.monthly;
+        break;
+      case ScheduleViews.monthly:
+        view = ScheduleViews.month;
+        break;
+      default:
+    }
+    notifyListeners();
   }
 
   openParaPanel(
