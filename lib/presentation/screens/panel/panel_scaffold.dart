@@ -9,6 +9,7 @@ import 'package:sidebarx/sidebarx.dart';
 
 import '../../shared/shared.dart';
 
+
 class PanelScaffold extends ConsumerStatefulWidget {
   final Widget child;
   const PanelScaffold({super.key, required this.child});
@@ -42,80 +43,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                                 width: 2,
                                 color:
                                     Theme.of(context).colorScheme.onSurface)))),
-                items: [
-                  SidebarXItem(
-                      iconBuilder: (selected, __) {
-                        return SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: BaseIconButton(
-                            icon: "assets/icons/home.svg",
-                            color: selected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface,
-                            onTap: () {
-                              controller.selectIndex(0);
-                              context.go('/dashboard');
-                            },
-                          ),
-                        );
-                      },
-                      label: 'Home'),
-                  SidebarXItem(
-                    selectable: false,
-                      iconBuilder: (selected, hovered) {
-                        log(selected.toString());
-                        return SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: BaseIconButton(
-                            icon: "assets/icons/calendar.svg",
-                            color: selected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface,
-                            onTap: () {
-                              controller.selectIndex(1);
-                              context.go('/schedule');
-                            },
-                          ),
-                        );
-                      },
-                      label: 'Home'),
-                  SidebarXItem(
-                      iconBuilder: (selected, hovered) {
-                        return SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: BaseIconButton(
-                            icon: "assets/icons/persons.svg",
-                            color: selected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface,
-                            onTap: () {
-                              context.go('/teachers');
-                            },
-                          ),
-                        );
-                      },
-                      label: 'teachers'),
-                  SidebarXItem(
-                      iconBuilder: (selected, hovered) {
-                        return SizedBox(
-                          width: 44,
-                          height: 44,
-                          child: BaseIconButton(
-                            icon: "assets/icons/persons.svg",
-                            color: selected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface,
-                            onTap: () {
-                              context.go('/groups');
-                            },
-                          ),
-                        );
-                      },
-                      label: 'groups'),
-                ],
+                items: _buildItems(context),
                 footerItems: [
                   SidebarXItem(
                       iconBuilder: (selected, hovered) {
@@ -138,10 +66,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           drawer: SidebarX(
             controller: controller,
-            items: const [
-              SidebarXItem(icon: Icons.home, label: 'Home'),
-              SidebarXItem(icon: Icons.search, label: 'Search'),
-            ],
+            items: _buildItems(context)
           ),
           body: Column(
             children: [
@@ -157,18 +82,47 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                     BaseIconButton(
                       icon: "assets/icons/home.svg",
                       onTap: () {
-                        controller.setExtended(true);
+                        controller.setExtended(false);
                         _key.currentState!.openDrawer();
                       },
                     ),
                   ],
                 ),
               ),
-              const Center(
-                child: Text("data"),
-              )
+              Expanded(child: widget.child)
             ],
           ));
     }
+  }
+
+
+  List<SidebarXItem> _buildItems(BuildContext context) {
+    final items = [
+      ("assets/icons/home.svg","/dashboard","Home"),
+      ("assets/icons/calendar.svg","/schedule","Home"),
+      ("assets/icons/persons.svg","/teachers","teachers"),
+      ("assets/icons/persons.svg","/groups","groups"),
+    ];  
+    return items.map((item){
+      return SidebarXItem(
+        iconBuilder: (selected, __) {
+          return SizedBox(
+            width: 44,
+            height: 44,
+            child: BaseIconButton(
+              icon: item.$1,
+              color: selected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface,
+              onTap: () {
+                controller.selectIndex(0);
+                context.go(item.$2);
+                _key.currentState!.closeDrawer();
+              },
+            ),
+          );
+        },
+      label: item.$3);
+    }).toList();
   }
 }

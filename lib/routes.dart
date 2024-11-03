@@ -5,6 +5,7 @@ import 'package:gefest/presentation/screens/login/login.dart';
 import 'package:gefest/presentation/screens/panel/panel_scaffold.dart';
 import 'package:gefest/presentation/screens/schedule/schedule.dart';
 import 'package:gefest/presentation/screens/teachers/teachers.dart';
+import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,7 +15,10 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/login',
+  initialLocation: '/',
+  // onException: (context, state, router) {
+  //   context.go('/login');
+  // },
   redirect: (context, state) {
     if (GetIt.I.get<Supabase>().client.auth.currentUser == null) {
       return '/login';
@@ -47,6 +51,12 @@ final router = GoRouter(
             path: '/teachers',
             pageBuilder: (context, state) {
               return transitionPage(state, TeachersScreen());
+            },
+          ),
+          GoRoute(
+            path: '/teacher',
+            pageBuilder: (context, state) {
+              return transitionPage(state, TeacherScreen(context));
             },
           ),
           GoRoute(

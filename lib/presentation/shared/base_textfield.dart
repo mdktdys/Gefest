@@ -15,6 +15,7 @@ class BaseTextField extends StatefulWidget {
   final Function()? onTap;
   final Function(String)? onFieldSubmitted;
   final bool locked;
+  final bool autofocus;
   const BaseTextField(
       {super.key,
       this.autofillHints,
@@ -23,6 +24,7 @@ class BaseTextField extends StatefulWidget {
       this.controller,
       this.validator,
       this.onChanged,
+      this.autofocus = false,
       this.onTap,
       this.onTapOutside,
       this.onEditingComplete,
@@ -60,6 +62,7 @@ class _BaseTextFieldState extends State<BaseTextField> {
         TextFormField(
           enabled: !widget.locked,
           style: Fa.smedium,
+          autofocus: widget.autofocus,
           obscureText: hided,
           controller: widget.controller,
           validator: widget.validator,
