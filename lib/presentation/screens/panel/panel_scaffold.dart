@@ -65,6 +65,15 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
           key: _key,
           backgroundColor: Theme.of(context).colorScheme.surface,
           drawer: SidebarX(
+            theme:  SidebarXTheme(
+                    selectedIconTheme: const IconThemeData(color: Ca.primary),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        border: Border(
+                            right: BorderSide(
+                                width: 2,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)))),
             controller: controller,
             items: _buildItems(context)
           ),
@@ -86,6 +95,8 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                         _key.currentState!.openDrawer();
                       },
                     ),
+                    SizedBox(width: 5),
+                    Expanded(child: Text(GoRouter.of(context).routeInformationProvider.value.uri.toString()))
                   ],
                 ),
               ),
@@ -102,6 +113,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       ("assets/icons/calendar.svg","/schedule","Home"),
       ("assets/icons/persons.svg","/teachers","teachers"),
       ("assets/icons/persons.svg","/groups","groups"),
+      ("assets/icons/persons.svg","/load","load"),
     ];  
     return items.map((item){
       return SidebarXItem(

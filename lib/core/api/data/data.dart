@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gefest/presentation/screens/load/providers/load_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -47,6 +48,14 @@ class DataProvider {
         ?.where((course) => course.id == id)
         .firstOrNull;
   }
+
+  CodeDiscipline? getDisciplineCode(int id) {
+    return ref
+        .watch(codeDisciplineProvider)
+        .value
+        ?.where((course) => course.id == id)
+        .firstOrNull;
+}
 }
 
 final timetableProvider = FutureProvider<List<ParaTime>>((ref) async {
