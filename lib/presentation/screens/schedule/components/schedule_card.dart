@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/api/models/paras.dart';
+import 'package:gefest/core/utlis.dart';
 import 'package:gefest/presentation/screens/schedule/components/para_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/presentation/shared/base_icon_button.dart';
@@ -73,7 +74,7 @@ class _ScheduleCardParaState extends ConsumerState<ScheduleCardPara> {
                   width: 5,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: ref.watch(dataProvider).getCourseById(widget.para.course)?.getColor()??Colors.transparent),
+                      color: getColorForText(ref.watch(dataProvider).getCourseById(widget.para.course)?.name??'')),
                 ),
                 const SizedBox(
                   width: 10,
