@@ -87,8 +87,6 @@ CustomTransitionPage transitionPage(state,page) {
       key: state.pageKey,
       child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        // Change the opacity of the screen using a Curve based on the the animation's
-        // value
         return FadeTransition(
           opacity:
               CurveTween(curve: Curves.easeInOutCirc).animate(animation),

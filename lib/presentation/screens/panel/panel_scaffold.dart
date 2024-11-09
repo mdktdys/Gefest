@@ -1,14 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gefest/presentation/shared/theme_button.dart';
-import 'package:gefest/theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-import '../../shared/shared.dart';
+import 'package:gefest/presentation/shared/theme_button.dart';
+import 'package:gefest/theme.dart';
 
+import '../../shared/shared.dart';
 
 class PanelScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -19,21 +20,25 @@ class PanelScaffold extends ConsumerStatefulWidget {
 }
 
 class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
-  final SidebarXController controller =
-      SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+
+  @override
+  void dispose() {
+    controller.dispose();  
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     if (MediaQuery.sizeOf(context).width > 640) {
       return Scaffold(
           key: _key,
-          backgroundColor: Theme.of(context).colorScheme.surface,
           body: Row(
             children: [
               SidebarX(
                 showToggleButton: false,
-                controller: SidebarXController(selectedIndex: 0),
+                controller: controller,
                 theme: SidebarXTheme(
                     selectedIconTheme: const IconThemeData(color: Ca.primary),
                     decoration: BoxDecoration(
@@ -63,7 +68,6 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
     } else {
       return Scaffold(
           key: _key,
-          backgroundColor: Theme.of(context).colorScheme.surface,
           drawer: SidebarX(
             theme:  SidebarXTheme(
                     selectedIconTheme: const IconThemeData(color: Ca.primary),
@@ -117,7 +121,8 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
     ];  
     return items.map((item){
       return SidebarXItem(
-        iconBuilder: (selected, __) {
+        iconBuilder: (_, __) {
+          bool selected = GoRouter.of(context).routeInformationProvider.value.uri.toString() == item.$2; 
           return SizedBox(
             width: 44,
             height: 44,

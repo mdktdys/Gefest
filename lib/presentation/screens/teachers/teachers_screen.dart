@@ -74,7 +74,9 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
               provider: filteredTeachersProvider,
               data: (teachers) {
                 return Column(
-                  children: teachers.map((teacher) => TeacherListTile(teacher)).toList(),
+                  children: teachers.map((teacher) {
+                    return TeacherListTile(teacher);
+                  }).toList(),
                 );
               },
             ),
@@ -99,7 +101,7 @@ class AsyncProvider <T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    return ref.watch(provider).when(data: data??(data){
+    return ref.watch(provider).when(data: data?? (data){
       return Text(data.toString());
     }, error: error??(e,o){
       return Center(child: Text(e.toString()),);

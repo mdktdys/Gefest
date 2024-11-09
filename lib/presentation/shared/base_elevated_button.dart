@@ -8,8 +8,13 @@ class BaseElevatedButton extends ConsumerStatefulWidget {
   final Function()? onTap;
   final double? width;
   final double? height;
-  const BaseElevatedButton(
-      {super.key, this.onTap, this.text, this.width, this.height});
+
+  const BaseElevatedButton({
+    this.onTap,
+    this.text,
+    this.width,
+    this.height,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
