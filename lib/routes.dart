@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:gefest/presentation/screens/course/course_screen.dart';
 import 'package:gefest/presentation/screens/dashboard/dashboard.dart';
 import 'package:gefest/presentation/screens/groups/groups.dart';
@@ -6,11 +11,9 @@ import 'package:gefest/presentation/screens/load/load_screen.dart';
 import 'package:gefest/presentation/screens/login/login.dart';
 import 'package:gefest/presentation/screens/panel/panel_scaffold.dart';
 import 'package:gefest/presentation/screens/schedule/schedule.dart';
+import 'package:gefest/presentation/screens/settings/settings_screen.dart';
 import 'package:gefest/presentation/screens/teachers/teachers.dart';
 import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -75,6 +78,12 @@ final router = GoRouter(
             path: '/load',
             pageBuilder: (context, state) {
               return transitionPage(state, LoadScreen(context));
+            },
+          ),
+          GoRoute(
+            path: '/settings',
+            pageBuilder: (context, state) {
+              return transitionPage(state, SettingsScreen(context));
             },
           ),
         ]),

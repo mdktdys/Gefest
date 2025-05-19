@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BaseIconButton extends StatelessWidget {
   final Function()? onTap;
   final String icon;
   final Color? color;
-  const BaseIconButton({super.key, this.onTap, required this.icon, this.color});
+  final Color? fillColor;
+
+  const BaseIconButton({
+    required this.icon,
+    this.fillColor,
+    this.onTap,
+    this.color,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: fillColor ?? Theme.of(context).colorScheme.surfaceContainer,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-              width: 2, color: Theme.of(context).colorScheme.onSurface)),
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(width: 2, color: Theme.of(context).colorScheme.surfaceContainerHighest)
+      ),
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -23,9 +33,9 @@ class BaseIconButton extends StatelessWidget {
             aspectRatio: 1 / 1,
             child: SvgPicture.asset(
               icon,
-              color: color??Colors.white,
               width: 32,
               height: 32,
+              colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
             ),
           ),
         ),

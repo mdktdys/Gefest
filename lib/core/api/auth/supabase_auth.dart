@@ -6,13 +6,16 @@ class Auth {
   static Future<ActionResult> signIn(String email, String password) async {
     try {
       final supabase = GetIt.I.get<Supabase>();
-      final response = await supabase.client.auth
-          .signInWithPassword(password: password, email: email);
+      final response = await supabase.client.auth.signInWithPassword(password: password, email: email);
 
       if (response.user != null) {
         return ActionResultOk(text: "Ok");
       }
-    } catch (e) {
+    } on AuthException catch (e) {
+      if (e.statusCode == '400') {
+        return ActionResultWarning(text: 'Неверные данные для входа');
+      }
+
       return ActionResultError(text: e.toString());
     }
 
@@ -33,4 +36,8 @@ class ActionResultOk extends ActionResult {
 
 class ActionResultError extends ActionResult {
   ActionResultError({required super.text});
+}
+
+class ActionResultWarning extends ActionResult {
+  ActionResultWarning({required super.text});
 }

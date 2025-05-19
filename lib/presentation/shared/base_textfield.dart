@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:gefest/theme.dart';
 
 class BaseTextField extends StatefulWidget {
@@ -16,6 +18,7 @@ class BaseTextField extends StatefulWidget {
   final Function(String)? onFieldSubmitted;
   final bool locked;
   final bool autofocus;
+
   const BaseTextField(
       {super.key,
       this.autofillHints,
@@ -97,17 +100,16 @@ class _BaseTextFieldState extends State<BaseTextField> {
                   : null,
               hintStyle: Fa.smedium,
               filled: true,
-              fillColor:
-                  Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Ca.primary),
-                  borderRadius: BorderRadius.circular(10)),
+              fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),borderRadius: BorderRadius.circular(10)),
+              border:OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.red)),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.primary ),borderRadius: BorderRadius.circular(10)),
               disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.onSurface),
-                  borderRadius: BorderRadius.circular(10)),
+                borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.onSurface
+              ),
+                borderRadius: BorderRadius.circular(10)
+              ),
               contentPadding: const EdgeInsets.all(10.0),
               hintText: widget.hintText),
           autofillHints: widget.autofillHints,

@@ -15,7 +15,7 @@ class OutlineArea extends StatelessWidget {
         color: backgroundFilled == true ? Theme.of(context).colorScheme.surface : Colors.transparent,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         border: Border.all(
-            color: Theme.of(context).colorScheme.onSurface, width: 2),
+            color: Theme.of(context).colorScheme.surfaceContainer, width: 2),
       ),
       child: child,
     );

@@ -1,20 +1,24 @@
-import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:chopper/chopper.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gefest/core/api/data/schedule/repository/test.dart';
-import 'package:gefest/core/api/models/DTO/containers.dart';
-import 'package:gefest/routes.dart';
-import 'package:gefest/secrets.dart';
-import 'package:gefest/theme.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
+import 'package:gefest/core/api/data/schedule/repository/test.dart';
+import 'package:gefest/core/api/models/DTO/containers.dart';
+import 'package:gefest/presentation/shared/providers/theme_provider.dart';
+import 'package:gefest/routes.dart';
+import 'package:gefest/secrets.dart';
 
 
 void main() async {
@@ -43,8 +47,7 @@ void main() async {
 
   usePathUrlStrategy();
 
-  final supabase =
-      await Supabase.initialize(url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY);
+  final supabase = await Supabase.initialize(url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY);
   GetIt.I.registerSingleton<Supabase>(supabase);
 
   final talker = TalkerFlutter.init();
@@ -52,6 +55,9 @@ void main() async {
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   GetIt.I.registerSingleton<PackageInfo>(packageInfo);
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  GetIt.I.registerSingleton<SharedPreferences>(prefs);
 
   runApp(const ProviderScope(
     child: Portal(
@@ -64,12 +70,23 @@ class ThemeApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-          title: "Dev Замены уксивтика",
-          routerConfig: router,
-          color: Colors.blue,
-          debugShowCheckedModeBanner: false,
-          theme: ref.watch(themeProvider).theme);
-    
+    final ThemeSettings themeProvider = ref.watch(lightThemeProvider);
+    final Brightness brightness = themeProvider.brightness;
+    final ThemeData? theme = themeProvider.theme;
+
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        systemNavigationBarIconBrightness: brightness,
+        statusBarIconBrightness: brightness,
+        statusBarColor: theme?.canvasColor,
+      ),
+      child: MaterialApp.router(
+        title: "Dev Замены уксивтика",
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+        theme: themeProvider.theme,
+        themeMode: themeProvider.themeMode,
+      ),
+    );
   }
 }

@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -69,7 +70,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       return Scaffold(
           key: _key,
           drawer: SidebarX(
-            theme:  SidebarXTheme(
+            theme: SidebarXTheme(
                     selectedIconTheme: const IconThemeData(color: Ca.primary),
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
@@ -118,7 +119,8 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       ("assets/icons/persons.svg","/teachers","teachers"),
       ("assets/icons/persons.svg","/groups","groups"),
       ("assets/icons/persons.svg","/load","load"),
-    ];  
+      ("assets/icons/settings.svg", '/settings', 'settings')
+    ];
     return items.map((item){
       return SidebarXItem(
         iconBuilder: (_, __) {

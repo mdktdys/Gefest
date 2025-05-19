@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/theme.dart';
 
@@ -8,17 +10,18 @@ class BaseElevatedButton extends ConsumerStatefulWidget {
   final Function()? onTap;
   final double? width;
   final double? height;
+  final bool isPrimary;
 
   const BaseElevatedButton({
     this.onTap,
     this.text,
     this.width,
     this.height,
+    this.isPrimary = false
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _BaseElevatedButtonState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BaseElevatedButtonState();
 }
 
 class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
@@ -27,14 +30,13 @@ class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: widget.onTap != null
-          ? Theme.of(context).colorScheme.primary
-          : Ca.primaryDisabled,
+      color: widget.isPrimary
+        ? Theme.of(context).colorScheme.primaryContainer
+        : Theme.of(context).colorScheme.secondaryContainer,
       borderRadius: BorderRadius.circular(8),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onHover: (value) {},
-        hoverColor: Ca.primaryHovered,
         onTap: () async {
           setState(() {
             loading = true;
@@ -43,10 +45,11 @@ class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
             await widget.onTap?.call();
           } catch (e) {
             ref.watch(messagesProvider).showMessage(
-                type: MesTypes.error,
-                header: "Ошибка",
-                body: e.toString(),
-                context: context);
+              type: MesTypes.error,
+              header: "Ошибка",
+              body: e.toString(),
+              context: context
+            );
           }
           setState(() {
             loading = false;

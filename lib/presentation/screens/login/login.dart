@@ -1,16 +1,18 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gefest/core/api/auth/supabase_auth.dart';
-import 'package:gefest/core/messages/messages_provider.dart';
-import 'package:gefest/presentation/shared/theme_button.dart';
-import 'package:gefest/theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import 'package:gefest/core/api/auth/supabase_auth.dart';
+import 'package:gefest/core/messages/messages_provider.dart';
+import 'package:gefest/presentation/shared/theme_button.dart';
+import 'package:gefest/theme.dart';
 
 import '../../shared/shared.dart';
 
@@ -79,9 +81,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           "assets/images/logo.png",
                           width: 80,
                         ),
-                        Text("Замены уксивтика",
-                            style:
-                                Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                        Text(
+                          "Замены уксивтика",
+                          style: Fa.big.copyWith(fontWeight: FontWeight.bold)
+                        ),
                       ],
                     )
                   else
@@ -92,9 +95,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           "assets/images/logo.png",
                           width: 120,
                         ),
-                        Text("Замены уксивтика",
-                            style:
-                                Fa.big.copyWith(fontWeight: FontWeight.bold)),
+                        Text(
+                          "Замены уксивтика",
+                          style: Fa.big.copyWith(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   const SizedBox(
@@ -106,8 +109,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     )
                   else
                     Padding(
-                        padding: const EdgeInsets.all(28),
-                        child: _buildLoginForm())
+                      padding: const EdgeInsets.all(28),
+                      child: _buildLoginForm())
                 ],
               ),
             ),
@@ -120,15 +123,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   _login() async {
     if (_formKey.currentState!.validate()) {
       TextInput.finishAutofillContext();
-      final ActionResult res =
-          await Auth.signIn(emailController.text, passwordController.text);
+      final ActionResult res = await Auth.signIn(emailController.text, passwordController.text);
 
       if (res is ActionResultError) {
         ref.watch(messagesProvider).showMessage(
             type: MesTypes.error,
-            header: "Ошибка",
+            header: "Ошибочка",
             body: res.text,
-            context: context);
+            context: context
+          );
+      } else if (res is ActionResultWarning) {
+        ref.watch(messagesProvider).showMessage(
+          type: MesTypes.warning,
+          header: "Проблема",
+          body: res.text,
+          context: context
+        );
       }
 
       if (res is ActionResultOk) {
