@@ -25,7 +25,7 @@ jobs:
       - run: flutter pub get
 
       - name: Build
-        run: flutter build web --release --web-renderer canvaskit --build-number ${{ github.run_number }}
+        run: flutter build web --release --build-number ${{ github.run_number }}
   
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
