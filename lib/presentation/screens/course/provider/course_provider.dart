@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:get_it/get_it.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
 import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
-import 'package:get_it/get_it.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final courseProvider = FutureProvider.family<Course,int>((ref,id) async {
   return (await ref.watch(coursesProvider.future)).where((course) => course.id == id).first;

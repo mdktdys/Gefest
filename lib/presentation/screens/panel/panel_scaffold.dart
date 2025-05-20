@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -7,10 +6,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-import 'package:gefest/presentation/shared/theme_button.dart';
 import 'package:gefest/theme.dart';
 
 import '../../shared/shared.dart';
+
+class CustomSideBarX extends StatelessWidget {
+  final SidebarXController controller;
+  final List<SidebarXItem> items;
+  final bool showToggleButton;
+
+  const CustomSideBarX({
+    required this.controller,
+    required this.items,
+    this.showToggleButton = true,
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SidebarX(
+      showToggleButton: showToggleButton,
+      controller: controller,
+      items: items,
+      theme: SidebarXTheme(
+        selectedIconTheme: const IconThemeData(color: Ca.primary),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          border: Border(right: BorderSide(width: 2, color: Theme.of(context).colorScheme.outlineVariant))
+        )
+      ),
+    );
+  }
+}
 
 class PanelScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -37,48 +64,19 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
           key: _key,
           body: Row(
             children: [
-              SidebarX(
+              CustomSideBarX(
                 showToggleButton: false,
                 controller: controller,
-                theme: SidebarXTheme(
-                    selectedIconTheme: const IconThemeData(color: Ca.primary),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        border: Border(
-                            right: BorderSide(
-                                width: 2,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)))),
                 items: _buildItems(context),
-                footerItems: [
-                  SidebarXItem(
-                      iconBuilder: (selected, hovered) {
-                        return SizedBox(
-                            width: 44,
-                            height: 44,
-                            child: ThemeButton(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ));
-                      },
-                      label: 'Theme'),
-                ],
               ),
               Expanded(child: widget.child)
             ],
-          ));
+          )
+        );
     } else {
       return Scaffold(
-          key: _key,
-          drawer: SidebarX(
-            theme: SidebarXTheme(
-                    selectedIconTheme: const IconThemeData(color: Ca.primary),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        border: Border(
-                            right: BorderSide(
-                                width: 2,
-                                color:
-                                    Theme.of(context).colorScheme.onSurface)))),
+        key: _key,
+        drawer: CustomSideBarX(
             controller: controller,
             items: _buildItems(context)
           ),
@@ -87,10 +85,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
               Container(
                 height: 65,
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: Theme.of(context).colorScheme.onSurface))),
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))),
                 child: Row(
                   children: [
                     BaseIconButton(
@@ -107,7 +102,8 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
               ),
               Expanded(child: widget.child)
             ],
-          ));
+          )
+        );
     }
   }
 
@@ -121,20 +117,22 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       ("assets/icons/persons.svg","/load","load"),
       ("assets/icons/settings.svg", '/settings', 'settings')
     ];
+
     return items.map((item){
       return SidebarXItem(
-        iconBuilder: (_, __) {
-          bool selected = GoRouter.of(context).routeInformationProvider.value.uri.toString() == item.$2; 
+        iconBuilder: (selected, hovered) {
+          bool selected = GoRouter.of(context).routeInformationProvider.value.uri.toString() == item.$2;
+          log(selected.toString());
           return SizedBox(
             width: 44,
             height: 44,
             child: BaseIconButton(
               icon: item.$1,
-              color: selected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface,
+              iconColor: selected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.primary.withAlpha(100),
               onTap: () {
-                controller.selectIndex(0);
+                controller.selectIndex(items.indexOf(item));
                 context.go(item.$2);
                 _key.currentState!.closeDrawer();
               },

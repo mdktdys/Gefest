@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
-import 'package:gefest/theme.dart';
 
 class BaseElevatedButton extends ConsumerStatefulWidget {
   final String? text;
@@ -57,7 +57,7 @@ class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
         },
         child: Container(
             height: widget.height,
-            width: widget.width ?? double.infinity,
+            width: widget.width,
             padding: const EdgeInsets.all(10),
             child: loading
                 ? const Center(
@@ -72,7 +72,7 @@ class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
                 : Text(
                     widget.text ?? "",
                     textAlign: TextAlign.center,
-                    style: Fa.smedium,
+                    style: context.styles.ubuntu16
                   )),
       ),
     );

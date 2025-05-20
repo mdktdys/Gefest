@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:flutter_riverpod/legacy.dart';
 
 final searchPanelProvider = ChangeNotifierProvider<SearchPanelNotifier>((ref) {
   return SearchPanelNotifier();

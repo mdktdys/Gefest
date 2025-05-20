@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'test.dart';
@@ -37,5 +38,16 @@ final class _$FastApiService extends FastApiService {
       client.baseUrl,
     );
     return client.send<DockerInfo, DockerInfo>($request);
+  }
+
+  @override
+  Future<Response<List<Department>>> fetchDepartments() {
+    final Uri $url = Uri.parse('/api/v1/departments/');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client.send<List<Department>, Department>($request);
   }
 }

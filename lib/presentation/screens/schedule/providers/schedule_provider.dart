@@ -1,8 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+
 import 'package:gefest/presentation/screens/schedule/components/para_panel.dart';
 
 import '../../../../core/api/api.dart';
@@ -25,8 +28,7 @@ class ScheduleNotifier extends ChangeNotifier {
     required this.ref,
   });
 
-  DateTime navigationDate =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime navigationDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   SearchItem? current_schedule_object;
 
   setNavigationDate(DateTime date, BuildContext context) {

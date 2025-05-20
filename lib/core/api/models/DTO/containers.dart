@@ -20,11 +20,9 @@ class DockerContainerInfo {
     this.finishedAt,
   });
 
-  // Метод для десериализации из JSON
   factory DockerContainerInfo.fromJson(Map<String, dynamic> json) =>
       _$DockerContainerInfoFromJson(json);
 
-  // Метод для сериализации в JSON
   Map<String, dynamic> toJson() => _$DockerContainerInfoToJson(this);
 }
 
@@ -34,11 +32,9 @@ class DockerInfo{
 
   DockerInfo({required this.containers});
 
-  // Метод для десериализации из JSON
   factory DockerInfo.fromJson(Map<String, dynamic> json) =>
       _$DockerInfoFromJson(json);
 
-  // Метод для сериализации в JSON
   Map<String, dynamic> toJson() => _$DockerInfoToJson(this);
   
   fromJson<T>(data) {

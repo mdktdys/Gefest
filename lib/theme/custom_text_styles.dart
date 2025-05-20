@@ -156,7 +156,13 @@ class CustomTextStyles extends ThemeExtension<CustomTextStyles> {
     fontSize: 22,
   );
 
-    late final TextStyle ubuntuBold12 = const TextStyle(
+  late final TextStyle ubuntuBold24 = const TextStyle(
+    fontWeight: FontWeight.bold,
+    fontFamily: 'Ubuntu',
+    fontSize: 22,
+  );
+
+  late final TextStyle ubuntuBold12 = const TextStyle(
     fontWeight: FontWeight.bold,
     fontFamily: 'Ubuntu',
     fontSize: 12,

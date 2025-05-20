@@ -1,17 +1,18 @@
-import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/api/models/teachers.dart';
-import 'package:gefest/core/basics.dart';
 import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
 import 'package:gefest/theme.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum SortOption { nameAsc, nameDesc }
 

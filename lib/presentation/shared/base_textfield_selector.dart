@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/theme.dart';
 
 import '../../core/api/api.dart';
+
 import 'shared.dart';
 
 class BaseTextFieldSelector extends ConsumerStatefulWidget {
@@ -102,7 +105,7 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
               height: 48,
               child: BaseIconButton(
                 icon: "assets/icons/clear.svg",
-                color: Theme.of(context).colorScheme.onSurface,
+                iconColor: Theme.of(context).colorScheme.onSurface,
                 onTap: () {
                   _clearField();
                 },

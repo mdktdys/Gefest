@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:core';
+
 import 'package:chopper/chopper.dart';
 
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/core/api/models/DTO/containers.dart';
+import 'package:gefest/core/api/models/department_model.dart';
 import 'package:gefest/secrets.dart';
 
 part 'test.chopper.dart';
@@ -13,24 +15,24 @@ class MyRequestInterceptor implements Interceptor {
   MyRequestInterceptor();
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
-    final request = applyHeaders(chain.request,
-        {'X-API-KEY': API_KEY, 'Access-Control-Allow-Origin': '*'});
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final request = applyHeaders(chain.request,{'X-API-KEY': API_KEY, 'Access-Control-Allow-Origin': '*'});
     return chain.proceed(request);
   }
 }
 
 @ChopperApi(baseUrl: "/api/v1/")
 abstract class FastApiService extends ChopperService {
-  static FastApiService create([ChopperClient? client]) =>
-      _$FastApiService(client);
+  static FastApiService create([ChopperClient? client]) => _$FastApiService(client);
 
-  @Get(path: "/groups/")
+  @GET(path: "/groups/")
   Future<Response<List<Group>>> getGroups();
 
-  @Get(path: "/parser/containers")
+  @GET(path: "/parser/containers")
   Future<Response<DockerInfo>> getContainersList();
+
+  @GET(path: '/departments/')
+  Future<Response<List<Department>>> fetchDepartments();
 }
 
 
@@ -53,8 +55,7 @@ class JsonSerializableConverter extends JsonConverter {
     return jsonFactory(values);
   }
 
-  List<T> _decodeList<T>(Iterable values) =>
-      values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
+  List<T> _decodeList<T>(Iterable values) => values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
 
   dynamic _decode<T>(entity) {
     if (entity is Iterable) return _decodeList<T>(entity as List);

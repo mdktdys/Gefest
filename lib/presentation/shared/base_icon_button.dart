@@ -5,14 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 class BaseIconButton extends StatelessWidget {
   final Function()? onTap;
   final String icon;
-  final Color? color;
   final Color? fillColor;
+  final Color? iconColor;
 
   const BaseIconButton({
     required this.icon,
+    this.iconColor,
     this.fillColor,
     this.onTap,
-    this.color,
     super.key,
   });
 
@@ -35,7 +35,7 @@ class BaseIconButton extends StatelessWidget {
               icon,
               width: 32,
               height: 32,
-              colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(iconColor ?? Theme.of(context).colorScheme.primary, BlendMode.srcIn),
             ),
           ),
         ),
