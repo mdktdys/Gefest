@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:gefest/core/api/api.dart';
@@ -7,6 +8,7 @@ import 'package:gefest/core/api/data/providers/department_provider.dart';
 import 'package:gefest/core/api/models/department_model.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/groups/providers/groups_screen_provider.dart';
+import 'package:gefest/presentation/screens/groups/widgets/group_tile_widget.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
 
@@ -50,37 +52,13 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
         SizedBox(height: 20),
         Builder(builder: (context) {
           return Column(
-            children: ref.watch(filteredGroupsProvider).map((Group group) {
-              final Department? department = ref.watch(departmentProvider(group.department));
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        group.name,
-                        style: context.styles.ubuntu16
-                      ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        department?.name ?? '-',
-                        style: context.styles.ubuntu14.copyWith(color: Theme.of(context).colorScheme.outline)
-                      ),
-                    ),
-                  ],
-                )
-              );
-            }).toList(),
+            children: AnimateList(
+              interval: 100.ms,
+              effects: [FadeEffect(duration: 300.ms)],
+              children: ref.watch(filteredGroupsProvider).map((Group group) {
+                return GroupTileWidget(group: group);
+              }).toList(),
+            ) 
           );
         })
       ],

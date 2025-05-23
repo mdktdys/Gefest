@@ -189,6 +189,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             BaseElevatedButton(
               text: "Войти",
+              width: double.infinity,
               onTap: () async {
                 await _login();
               },

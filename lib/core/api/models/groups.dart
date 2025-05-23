@@ -7,10 +7,19 @@ import 'package:gefest/core/api/models/search.dart';
 class Group extends SearchItem {
   final int id;
   final String name;
+  final String? image;
   final int department;
 
-  Group({required this.id, required this.name, required this.department})
-      : super(searchText: name,type: SearchType.group,searchID: id);
+  Group({
+    required this.id,
+    required this.name,
+    required this.department,
+    required this.image,
+  }) : super(
+    searchText: name,
+    type: SearchType.group,
+    searchID: id
+  );
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -25,11 +34,11 @@ class Group extends SearchItem {
       id: map['id'] as int,
       name: map['name'] as String,
       department: map['department'] as int,
+      image: map['image'] as String?
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Group.fromJson(String source) =>
-      Group.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Group.fromJson(String source) => Group.fromMap(json.decode(source) as Map<String, dynamic>);
 }
