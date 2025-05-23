@@ -219,6 +219,11 @@ class CustomTextStyles extends ThemeExtension<CustomTextStyles> {
     fontSize: 14,
   );
 
+  late final TextStyle ubuntu22 = const TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 22,
+  );
+
   late final TextStyle ubuntu18 = const TextStyle(
     fontFamily: 'Ubuntu',
     fontSize: 18,

@@ -41,8 +41,8 @@ void main() async {
   
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: kIsWeb
-        ? HydratedStorage.webStorageDirectory
-        : await getApplicationDocumentsDirectory(),
+      ? HydratedStorage.webStorageDirectory
+      : await getApplicationDocumentsDirectory(),
   );
 
   usePathUrlStrategy();

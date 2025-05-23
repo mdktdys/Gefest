@@ -1,17 +1,15 @@
-
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/core/basics.dart';
+import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/course/provider/course_provider.dart';
-import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
-import 'package:gefest/presentation/shared/base_elevated_button.dart';
+import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
-import 'package:gefest/presentation/shared/base_textfield.dart';
 import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
+import 'package:gefest/theme/spacing.dart';
 
 class CourseScreenParameters extends QueryParameters {
   CourseScreenParameters(super.context);
@@ -32,44 +30,57 @@ class CourseScreen extends ScreenPageWidget<CourseScreenParameters> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: Spacing.listHorizontalPadding,
             children: [
-              SizedBox(height: 20),
               Text(course.name??'',style: Fa.medium,),
-              SizedBox(height: 20),
-              Row(children: [
-                BaseOutlinedButton(
-                  height: 40,
-                  width: 100,
-                  color: Colors.green,
-                  text: "Добавить",
-                  onTap: () async {
-                    ref.read(courseScreenProvider).addSynonyms(context,course);
-                  },
-                )
-              ],),
-              SizedBox(height: 20,),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: course.synonyms.map((syn){
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onSurface)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(child: SelectionArea(child: Text(syn,style: Fa.small))),
-                        IconButton(onPressed: (){
-                          ref.read(courseScreenProvider).removeSynonyms(context: context, course: course, syn: syn);
-                        }, icon: Icon(Icons.remove))
-                      ],
+              BaseContainer(
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
+                child: Column(
+                  children: [
+                    Text(
+                      'Синонимы',
+                      style: context.styles.ubuntu16,
                     ),
-                  );
-                }).toList(),
-              )
+                    Column(
+                      spacing: Spacing.list,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: course.synonyms.map((String syn) {
+                        return BaseContainer(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                syn,
+                                style: context.styles.ubuntu14,
+                              ),
+                              BaseOutlinedButton(
+                                text: 'Удалить',
+                                onTap: () async {
+                                  ref.read(courseScreenProvider).removeSynonyms(context: context, course: course, syn: syn);
+                                },
+                              )
+                            ],
+                          )
+                        );
+                      }).toList(),
+                    )
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  BaseOutlinedButton(
+                    height: 40,
+                    width: 100,
+                    text: "Добавить",
+                    onTap: () async {
+                      ref.read(courseScreenProvider).addSynonyms(context,course);
+                    },
+                  )
+                ],
+              ),
             ],
           ),
         );

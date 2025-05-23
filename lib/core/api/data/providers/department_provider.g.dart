@@ -99,7 +99,7 @@ final class DepartmentProvider
   }
 }
 
-String _$departmentHash() => r'38352799c716ff3c8b8e1dd0221590c531baac6d';
+String _$departmentHash() => r'c0e3a3aec5277142fe52cf71d426ef052ace426b';
 
 final class DepartmentFamily extends $Family
     with $FunctionalFamilyOverride<Department?, int> {

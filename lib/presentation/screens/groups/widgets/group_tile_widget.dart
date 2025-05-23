@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gefest/core/api/data/providers/department_provider.dart';
 import 'package:gefest/core/api/models/department_model.dart';
@@ -35,6 +36,7 @@ class GroupTileWidget extends ConsumerWidget {
             children: [
               CircleAvatar(
                 maxRadius: 32,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
                 foregroundImage: NetworkImage(group.image ?? ''),
               ),
               Column(
@@ -58,7 +60,7 @@ class GroupTileWidget extends ConsumerWidget {
               BaseElevatedButton(
                 text: 'Изменить',
                 onTap: () {
-                  
+                  context.go(Uri(path:'/group',queryParameters: {'id': group.id.toString()}).toString());
                 },
               )
             ],

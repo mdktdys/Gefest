@@ -1,8 +1,8 @@
-
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
@@ -10,7 +10,6 @@ import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
 import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
 
 class TeacherScreenParameters extends QueryParameters {
   TeacherScreenParameters(super.context);

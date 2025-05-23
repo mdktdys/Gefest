@@ -45,7 +45,7 @@ final class FilteredGroupsProvider
   }
 }
 
-String _$filteredGroupsHash() => r'3f66b1dda8cc69737b83197daef1e89a4f80f0f1';
+String _$filteredGroupsHash() => r'87e7bad661926543c9a9bfa8fe4cf9289ab72780';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

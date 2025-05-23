@@ -97,6 +97,18 @@ final teachersProvider = FutureProvider<List<Teacher>>((ref) async {
   return parse<Teacher>(res, Teacher.fromMap).toList();
 });
 
+final groupProvider = StateProvider.family<Group?, int>((final Ref ref, final int id) {
+  return ref.watch(groupsProvider).value?.where((final group) => group.id == id).firstOrNull;
+});
+
+final courseProvider = StateProvider.family<Course?,int>((final Ref ref, final int id) {
+  return ref.watch(coursesProvider).value?.where((final course) => course.id == id).firstOrNull;
+});
+
+final teacherProvider = StateProvider.family<Teacher?,int>((final Ref ref, final int id) {
+  return ref.watch(teachersProvider).value?.where((final teacher) => teacher.id == id).firstOrNull;
+});
+
 final searchItemsProvider = FutureProvider<List<SearchItem>>((ref) async {
   final groupsAsyncValue = ref.watch(groupsProvider);
   final teachersAsyncValue = ref.watch(teachersProvider);

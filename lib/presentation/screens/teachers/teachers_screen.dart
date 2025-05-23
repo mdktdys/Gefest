@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
 import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
 class TeachersScreen extends ConsumerStatefulWidget {
   const TeachersScreen({super.key});
 
@@ -86,7 +88,7 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
   }
 }
 
-class AsyncProvider <T> extends ConsumerWidget {
+class AsyncProvider<T> extends ConsumerWidget {
   final FutureProvider<T> provider;
   final Widget Function()? loading;
   final Widget Function(T)? data;

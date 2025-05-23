@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
+import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/theme.dart';
+import 'package:gefest/theme/spacing.dart';
 
 import '../../shared/shared.dart';
 
@@ -41,7 +43,11 @@ class CustomSideBarX extends StatelessWidget {
 
 class PanelScaffold extends ConsumerStatefulWidget {
   final Widget child;
-  const PanelScaffold({super.key, required this.child});
+
+  const PanelScaffold({
+    required this.child,
+    super.key,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PanelScaffoldState();
@@ -69,7 +75,33 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
                 controller: controller,
                 items: _buildItems(context),
               ),
-              Expanded(child: widget.child)
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 60,
+                      padding: EdgeInsets.all(Spacing.list),
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))
+                      ),
+                      child: Row(
+                        spacing: Spacing.list,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Уразаева А.A.',
+                            style: context.styles.ubuntu14,
+                          ),
+                          CircleAvatar(
+                            foregroundImage: NetworkImage('https://ojbsikxdqcbuvamygezd.supabase.co/storage/v1/object/sign/zamenas/photo_2025-05-23_21-30-46.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzE2ODE2ZWUyLWFjZWUtNDI1NS1iYjU0LTFlOWY3ZWIxMDViZCJ9.eyJ1cmwiOiJ6YW1lbmFzL3Bob3RvXzIwMjUtMDUtMjNfMjEtMzAtNDYuanBnIiwiaWF0IjoxNzQ4MDE3ODY2LCJleHAiOjE3Nzk1NTM4NjZ9.YrePuzVZitpgUU48C2tC4uu9GAtVPy6SDJDPqgCHDII'),
+                          )
+                        ],
+                      )
+                    ),
+                    Expanded(child: widget.child),
+                  ],
+                ),
+              )
             ],
           )
         );

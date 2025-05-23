@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:gefest/presentation/screens/course/course_screen.dart';
 import 'package:gefest/presentation/screens/dashboard/dashboard.dart';
+import 'package:gefest/presentation/screens/group/screens/group_screen.dart';
 import 'package:gefest/presentation/screens/groups/groups.dart';
 import 'package:gefest/presentation/screens/load/load_screen.dart';
 import 'package:gefest/presentation/screens/login/login.dart';
@@ -68,7 +69,14 @@ final router = GoRouter(
             path: '/groups',
             pageBuilder: (context, state) {
               return transitionPage(state, GroupsScreen());
-          },),
+            }
+          ),
+          GoRoute(
+            path: '/group',
+            pageBuilder: (context, state) {
+              return transitionPage(state, GroupScreen(context));
+            }
+          ),
           GoRoute(
             path: '/course',
             pageBuilder: (context, state) {
