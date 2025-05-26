@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:gefest/core/api/api.dart';
-import 'package:gefest/core/api/data/providers/department_provider.dart';
-import 'package:gefest/core/api/models/department_model.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/groups/providers/groups_screen_provider.dart';
 import 'package:gefest/presentation/screens/groups/widgets/group_tile_widget.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
+import 'package:gefest/theme/spacing.dart';
 
 
 class GroupsScreen extends ConsumerStatefulWidget {
@@ -28,13 +28,15 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
     return ListView(
       padding: const EdgeInsets.all(20.0),
       children: [
+        Text(
+          'Группы',
+          textAlign: TextAlign.left,
+          style: context.styles.ubuntu20
+        ),
+        SizedBox(height: Spacing.list),
         Row(
           spacing: 10,
           children: [
-            // Text(
-            //   "Группы",
-            //   style: context.styles.ubuntuBold24,
-            // ),
             Flexible(
               child: BaseTextField(
                 hintText: 'Поиск...',
@@ -46,6 +48,10 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
             ),
             BaseElevatedButton(
               text: 'Добавить',
+              onTap: () {
+                final Group group = Group.create();
+                context.go(Uri(path:'/group',queryParameters: {'id': group.id.toString()}).toString());
+              },
             )
           ],
         ),

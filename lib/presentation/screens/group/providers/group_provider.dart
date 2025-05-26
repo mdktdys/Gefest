@@ -14,3 +14,13 @@ final groupLinksProvider = FutureProvider.family<List<LoadLink>, int>((ref, int 
   final List<Map<String, dynamic>> result = await client.from('loadlinkers').select('*').eq('group', group);
   return result.map((final Map<String, dynamic> map) => LoadLink.fromMap(map)).toList();
 });
+
+class CourseScreenProvider {
+  Ref ref;
+
+  CourseScreenProvider(this.ref);
+
+  Future<void> removeSyn(String syn) {
+    
+  }
+}

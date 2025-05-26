@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/course/provider/course_provider.dart';
+import 'package:gefest/presentation/screens/group/providers/group_provider.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
@@ -17,9 +18,12 @@ class CourseScreenParameters extends QueryParameters {
   int get courseId => int.parse(getParams['id']!);
 }
 
-class CourseScreen extends ScreenPageWidget<CourseScreenParameters> {
+class CourseScreen extends ScreenPageWidget<CourseScreenParameters, Provider<CourseScreenProvider>> {
   
-  CourseScreen(BuildContext context) : super(params: CourseScreenParameters(context));
+  CourseScreen(BuildContext context) : super(
+    params: CourseScreenParameters(context),
+    controller: Provider<CourseScreenProvider>((ref) => CourseScreenProvider(ref))
+  );
 
   @override 
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,7 +36,7 @@ class CourseScreen extends ScreenPageWidget<CourseScreenParameters> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: Spacing.listHorizontalPadding,
             children: [
-              Text(course.name??'',style: Fa.medium,),
+              Text(course.name ?? '',style: Fa.medium),
               BaseContainer(
                 color: Theme.of(context).colorScheme.surfaceContainerLow,
                 child: Column(

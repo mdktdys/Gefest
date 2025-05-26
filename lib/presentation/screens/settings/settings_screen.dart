@@ -21,7 +21,7 @@ class SettingsScreen extends ScreenPageWidget<SettingsScreenParameters> {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface.getShadeColor(shadeValue: 5),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(

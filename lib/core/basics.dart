@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,8 +11,13 @@ class QueryParameters {
   Map<String, String> get getParams => GoRouterState.of(context).uri.queryParameters;
 }
 
-abstract class ScreenPageWidget<T extends QueryParameters> extends ConsumerWidget {
+abstract class ScreenPageWidget<T extends QueryParameters, C> extends ConsumerWidget {
   final T params;
+  final C controller;
 
-  const ScreenPageWidget({super.key, required this.params});
+  const ScreenPageWidget({
+    required this.params,
+    required this.controller,
+    super.key,
+  });
 }

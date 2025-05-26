@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +13,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:gefest/core/api/auth/supabase_auth.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/shared/theme_button.dart';
+import 'package:gefest/secrets.dart';
 import 'package:gefest/theme.dart';
 
 import '../../shared/shared.dart';
@@ -34,8 +36,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_){
       if(GetIt.I.get<Supabase>().client.auth.currentUser != null) {
         context.go('/dashboard');
+        return;
       }
     });
+
+    if (kDebugMode) {
+      emailController.text = TEST_EMAIL;
+      passwordController.text = TEST_PASSWORD;
+    }
   }
 
   @override

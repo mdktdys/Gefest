@@ -21,6 +21,15 @@ class Group extends SearchItem {
     searchID: id
   );
 
+  factory Group.create() {
+    return Group(
+      id: -1,
+      name: '',
+      department: 1,
+      image: ''
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
