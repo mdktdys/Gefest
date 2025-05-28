@@ -8,6 +8,7 @@ import 'package:gefest/presentation/screens/course/provider/course_provider.dart
 import 'package:gefest/presentation/screens/group/providers/group_provider.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
+import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
 import 'package:gefest/theme.dart';
 import 'package:gefest/theme/spacing.dart';
@@ -40,9 +41,12 @@ class CourseScreen extends ScreenPageWidget<CourseScreenParameters, Provider<Cou
               BaseContainer(
                 color: Theme.of(context).colorScheme.surfaceContainerLow,
                 child: Column(
+                  spacing: Spacing.list,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
                       'Синонимы',
+                      textAlign: TextAlign.start,
                       style: context.styles.ubuntu16,
                     ),
                     Column(
@@ -68,22 +72,20 @@ class CourseScreen extends ScreenPageWidget<CourseScreenParameters, Provider<Cou
                           )
                         );
                       }).toList(),
-                    )
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        BaseElevatedButton(
+                          text: "Добавить синоним",
+                          onTap: () async {
+                            ref.read(courseScreenProvider).addSynonyms(context, course);
+                          },
+                        )
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  BaseOutlinedButton(
-                    height: 40,
-                    width: 100,
-                    text: "Добавить",
-                    onTap: () async {
-                      ref.read(courseScreenProvider).addSynonyms(context,course);
-                    },
-                  )
-                ],
               ),
             ],
           ),

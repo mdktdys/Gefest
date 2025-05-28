@@ -56,17 +56,19 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
           ],
         ),
         SizedBox(height: 20),
-        Builder(builder: (context) {
-          return Column(
-            children: AnimateList(
-              interval: 100.ms,
-              effects: [FadeEffect(duration: 300.ms)],
-              children: ref.watch(filteredGroupsProvider).map((Group group) {
-                return GroupTileWidget(group: group);
-              }).toList(),
-            ) 
-          );
-        })
+        Builder(
+          builder: (context) {
+            return Column(
+              children: AnimateList(
+                interval: 100.ms,
+                effects: [FadeEffect(duration: 300.ms)],
+                children: ref.watch(filteredGroupsProvider).map((Group group) {
+                  return GroupTileWidget(group: group);
+                }).toList(),
+              ) 
+            );
+          },
+        ),
       ],
     );
   }
