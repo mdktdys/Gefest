@@ -20,7 +20,7 @@ class CourseScreenProvider {
 
   CourseScreenProvider(this.ref);
 
-  Future<void> removeSyn(String syn) {
-    
+  Future<void> removeSyn(String syn) async {
+    return;
   }
 }

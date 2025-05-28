@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/course/provider/course_provider.dart';
-import 'package:gefest/presentation/screens/group/providers/group_provider.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
@@ -19,11 +18,10 @@ class CourseScreenParameters extends QueryParameters {
   int get courseId => int.parse(getParams['id']!);
 }
 
-class CourseScreen extends ScreenPageWidget<CourseScreenParameters, Provider<CourseScreenProvider>> {
+class CourseScreen extends ScreenPageWidget<CourseScreenParameters> {
   
   CourseScreen(BuildContext context) : super(
     params: CourseScreenParameters(context),
-    controller: Provider<CourseScreenProvider>((ref) => CourseScreenProvider(ref))
   );
 
   @override 

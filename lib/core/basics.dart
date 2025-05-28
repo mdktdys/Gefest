@@ -11,13 +11,11 @@ class QueryParameters {
   Map<String, String> get getParams => GoRouterState.of(context).uri.queryParameters;
 }
 
-abstract class ScreenPageWidget<T extends QueryParameters, C> extends ConsumerWidget {
+abstract class ScreenPageWidget<T extends QueryParameters> extends ConsumerWidget {
   final T params;
-  final C controller;
 
   const ScreenPageWidget({
     required this.params,
-    required this.controller,
     super.key,
   });
 }
