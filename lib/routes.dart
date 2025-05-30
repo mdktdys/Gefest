@@ -4,8 +4,10 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:gefest/core/basics.dart';
 import 'package:gefest/presentation/screens/course/course_screen.dart';
 import 'package:gefest/presentation/screens/dashboard/dashboard.dart';
+import 'package:gefest/presentation/screens/group/screens/group_form_screen.dart';
 import 'package:gefest/presentation/screens/group/screens/group_screen.dart';
 import 'package:gefest/presentation/screens/groups/groups.dart';
 import 'package:gefest/presentation/screens/load/load_screen.dart';
@@ -54,7 +56,7 @@ final router = GoRouter(
             },
           ),
           GoRoute(
-            path: '/teachers',
+            path: Routes.teachers,
             pageBuilder: (context, state) {
               return transitionPage(state, TeachersScreen());
             },
@@ -94,6 +96,12 @@ final router = GoRouter(
               return transitionPage(state, SettingsScreen(context));
             },
           ),
+          GoRoute(
+            path: Routes.newGroup,
+            pageBuilder: (context, state) {
+              return transitionPage(state, GroupFormScreen(context));
+            },
+          )
         ]),
   ],
 );
@@ -105,10 +113,18 @@ CustomTransitionPage transitionPage(state,page) {
       child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
-          opacity:
-              CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+          opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
           child: child,
         );
       },
     );
 }
+
+abstract class Routes {
+  static final String teachers = '/teachers';
+  static final String baseTeacher = '/teacher';
+  static final String newTeacher = '/new_teacher';
+
+  static final String newGroup = '/new_group';
+}
+

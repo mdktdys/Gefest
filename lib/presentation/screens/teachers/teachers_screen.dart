@@ -4,9 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:gefest/core/api/api.dart';
+import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
+import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
+import 'package:gefest/routes.dart';
 import 'package:gefest/theme.dart';
+import 'package:gefest/theme/spacing.dart';
 class TeachersScreen extends ConsumerStatefulWidget {
   const TeachersScreen({super.key});
 
@@ -33,58 +37,74 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
   Widget build(BuildContext context) {
     final teachersFilter = ref.watch(teachersFilterProvider);
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(20.0),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Поле ввода для фильтрации
-            BaseTextField(
-              controller: controller,
-              onChanged: (p0) {
-                ref.read(teachersFilterProvider).updateFilterText(controller.text);
-              },
-            ),
-            SizedBox(height: 10),
-            
-            // Выпадающий список для выбора сортировки
-            DropdownButton<SortOption>(
-              value: teachersFilter.sortOption,
-              onChanged: (SortOption? newValue) {
-                if (newValue != null) {
-                  ref.read(teachersFilterProvider).updateSortOption(newValue);
-                }
-              },
-              underline: SizedBox(),
-              borderRadius: BorderRadius.circular(16),
-              items: [
-                DropdownMenuItem(
-                  value: SortOption.nameAsc,
-                  child: Text("Сортировать по имени (возрастание)"),
+    return ListView(
+        padding: const EdgeInsets.all(20.0),
+        children: [
+          Text(
+            'Преподаватели',
+            textAlign: TextAlign.left,
+            style: context.styles.ubuntu20
+          ),
+          SizedBox(height: Spacing.list),
+          Row(
+            spacing: 10,
+            children: [
+              Expanded(
+                child: BaseTextField(
+                  controller: controller,
+                  hintText: 'Поиск преподавателя...',
+                  onChanged: (p0) {
+                    ref.read(teachersFilterProvider).updateFilterText(controller.text);
+                  },
                 ),
-                DropdownMenuItem(
-                  value: SortOption.nameDesc,
-                  child: Text("Сортировать по имени (убывание)"),
-                ),
-              ],
-            ),
-            
-            SizedBox(height: 10),
-            
-            // Отображение отфильтрованного и отсортированного списка преподавателей
-            AsyncProvider<List<Teacher>>(
-              provider: filteredTeachersProvider,
-              data: (teachers) {
-                return Column(
-                  children: teachers.map((teacher) {
-                    return TeacherListTile(teacher);
-                  }).toList(),
-                );
-              },
-            ),
-          ],
-        ),
-    );
+              ),
+              BaseElevatedButton(
+                text: 'Добавить',
+                onTap: () {
+                  final Group group = Group.create();
+                  context.go(Uri(path: Routes.newTeacher).toString());
+                },
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          
+          // DropdownButton<SortOption>(
+          //   value: teachersFilter.sortOption,
+          //   onChanged: (SortOption? newValue) {
+          //     if (newValue != null) {
+          //       ref.read(teachersFilterProvider).updateSortOption(newValue);
+          //     }
+          //   },
+          //   underline: SizedBox(),
+          //   borderRadius: BorderRadius.circular(16),
+          //   items: [
+          //     DropdownMenuItem(
+          //       value: SortOption.nameAsc,
+          //       child: Text("Сортировать по имени (возрастание)"),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: SortOption.nameDesc,
+          //       child: Text("Сортировать по имени (убывание)"),
+          //     ),
+          //   ],
+          // ),
+          
+          SizedBox(height: 10),
+          
+          // Отображение отфильтрованного и отсортированного списка преподавателей
+          AsyncProvider<List<Teacher>>(
+            provider: filteredTeachersProvider,
+            data: (teachers) {
+              return Column(
+                children: teachers.map((teacher) {
+                  return TeacherListTile(teacher);
+                }).toList(),
+              );
+            },
+          ),
+        ],
+      );
   }
 }
 
@@ -124,6 +144,51 @@ class TeacherListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Row(
+            spacing: 20,
+            children: [
+              // CircleAvatar(
+              //   maxRadius: 32,
+              //   backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+              //   foregroundImage: NetworkImage(teacher.image ?? ''),
+              // ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    teacher.name ?? '',
+                    style: context.styles.ubuntu18
+                  ),
+                ],
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              BaseElevatedButton(
+                text: 'Изменить',
+                onTap: () {
+                  context.go(Uri(path:'/teacher',queryParameters: {'id': teacher.id.toString()}).toString());
+                },
+              )
+            ],
+          )
+        ],
+      )
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       width: double.infinity,

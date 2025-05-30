@@ -60,7 +60,7 @@ class GroupTileWidget extends ConsumerWidget {
               BaseElevatedButton(
                 text: 'Изменить',
                 onTap: () {
-                  context.go(Uri(path:'/group',queryParameters: {'id': group.id.toString()}).toString());
+                  context.go(Uri(path: '/group',queryParameters: {'id': group.id.toString()}).toString());
                 },
               )
             ],

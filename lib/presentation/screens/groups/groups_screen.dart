@@ -10,6 +10,7 @@ import 'package:gefest/presentation/screens/groups/providers/groups_screen_provi
 import 'package:gefest/presentation/screens/groups/widgets/group_tile_widget.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
+import 'package:gefest/routes.dart';
 import 'package:gefest/theme/spacing.dart';
 
 
@@ -39,7 +40,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
           children: [
             Flexible(
               child: BaseTextField(
-                hintText: 'Поиск...',
+                hintText: 'Поиск группы...',
                 controller: controller,
                 onChanged: (String p0) {
                   ref.read(searchStringProvider.notifier).state = p0;
@@ -49,8 +50,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
             BaseElevatedButton(
               text: 'Добавить',
               onTap: () {
-                final Group group = Group.create();
-                context.go(Uri(path:'/group',queryParameters: {'id': group.id.toString()}).toString());
+                context.go(Uri(path: Routes.newGroup).toString());
               },
             )
           ],
