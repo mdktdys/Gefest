@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gefest/core/api/data/data.dart' hide groupProvider;
 import 'package:gefest/core/api/data/providers/department_provider.dart';
+import 'package:gefest/core/api/data/repository/data_repository.dart';
 import 'package:gefest/core/api/models/course.dart';
 import 'package:gefest/core/api/models/department_model.dart';
 import 'package:gefest/core/api/models/groups.dart';
 import 'package:gefest/core/api/models/teachers.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
+import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/screens/group/providers/group_provider.dart';
 import 'package:gefest/presentation/screens/load/providers/load_provider.dart';
 import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
@@ -152,6 +154,27 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
                                       textAlign: TextAlign.right,
                                     ),
                                   )
+                                ),
+                                SizedBox(width: Spacing.list),
+                                SizedBox(
+                                  height: 48,
+                                  child: BaseIconButton(
+                                    icon: 'assets/icons/clear.svg',
+                                    onTap: () async {
+                                      bool result = await showDialog(context: context, builder: (context) => YesNoDialog(
+                                        title: 'Удалить привязку?',
+                                        body: 'Это действие нельзя отменить',
+                                      ));
+                                      
+                                      if (!result) {
+                                        return;
+                                      }
+
+                                      await ref.watch(dataSourceRepositoryProvider).deleteLink(id: link.id!);
+                                      ref.refresh(groupLinksProvider(group.id));
+                                      ref.read(messagesProvider).showMessage(type: MesTypes.success, header: 'Успешно', body: 'Привязка удалена', context: context);
+                                    },
+                                  ),
                                 )
                               ],
                             )
@@ -168,39 +191,7 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
                         onTap: () async {
                           await showDialog(
                             context: context,
-                            builder: (context) => Panel(
-                              title: 'Новая привязка',
-                              chilren: [
-                                BaseTextFieldSelector(
-                                  initial: group,
-                                  header: "Группа",
-                                  items: ref.watch(groupsProvider).value ?? [],
-                                  itemSelected: (item) {
-                                    group = item;
-                                  },
-                                ),
-                                BaseTextFieldSelector(
-                                  header: "Предмет",
-                                  items: ref.watch(coursesProvider).value ?? [],
-                                  itemSelected: (item) {
-                                    course = item;
-                                  },
-                                ),
-                                BaseTextFieldSelector(
-                                  header: "Преподаватель",
-                                  items: ref.watch(teachersProvider).value ?? [],
-                                  itemSelected: (item) {
-                                    teacher = item;
-                                  },
-                                ),
-                                BaseOutlinedButton(
-                                  text: "Отмена",
-                                  onTap: () {
-                                    context.pop();
-                                  },
-                                )
-                              ],
-                            ),
+                            builder: (context) => AddLinkPanel(group: group)
                           );
                         },
                       )
@@ -213,6 +204,141 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
           ],
         );
       },
+    );
+  }
+}
+
+class YesNoDialog extends ConsumerWidget {
+  final String title;
+  final String body;
+
+  const YesNoDialog({
+    required this.title,
+    required this.body,
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 600),
+        child: BaseContainer(
+          child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: Spacing.list,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.left,
+              style: context.styles.ubuntu20,
+            ),
+            Text(
+              body,
+              textAlign: TextAlign.left,
+              style: context.styles.ubuntu14,
+            ),
+            Row(
+              spacing: Spacing.list,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: BaseOutlinedButton(
+                    text: 'Отмена',
+                    onTap: () {
+                      context.pop(false);
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: BaseElevatedButton(
+                    text: 'Удалить',
+                    onTap: () {
+                      context.pop(true);
+                    },
+                  ),
+                )
+              ],
+            )
+          ],
+                )),
+      ),
+    );
+  }
+}
+
+class AddLinkPanel extends ConsumerStatefulWidget {
+  final Group group;
+
+  const AddLinkPanel({
+    required this.group,
+    super.key
+  });
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddLinkPanelState();
+}
+
+class _AddLinkPanelState extends ConsumerState<AddLinkPanel> {
+  late Group group;
+  Course? course;
+  Teacher? teacher;
+
+  @override
+  void initState() {
+    group = widget.group;    
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Panel(
+      title: 'Новая привязка',
+      chilren: [
+        BaseTextFieldSelector(
+          initial: group,
+          header: "Группа",
+          items: ref.watch(groupsProvider).value ?? [],
+          itemSelected: (item) {
+            group = item;
+          },
+        ),
+        BaseTextFieldSelector(
+          header: "Предмет",
+          items: ref.watch(coursesProvider).value ?? [],
+          itemSelected: (item) {
+            course = item;
+          },
+        ),
+        BaseTextFieldSelector(
+          header: "Преподаватель",
+          items: ref.watch(teachersProvider).value ?? [],
+          itemSelected: (item) {
+            teacher = item;
+          },
+        ),
+        BaseElevatedButton(
+          text: "Создать привязку",
+          onTap: () async {
+            await ref.read(dataSourceRepositoryProvider).createLink(link: LoadLink(
+              group: group.id,
+              teacher: teacher?.id,
+              course: course?.id
+            ));
+            ref.refresh(groupLinksProvider(group.id));
+            ref.read(messagesProvider).showMessage(type: MesTypes.success, header: 'Успешно', body: 'Привязка создана', context: context);
+            context.pop();
+          },
+        ),
+        BaseOutlinedButton(
+          text: "Отмена",
+          onTap: () {
+            context.pop();
+          },
+        )
+      ],
     );
   }
 }
@@ -296,6 +422,7 @@ class _ParaPanelState extends ConsumerState<ParaPanel> {
                   width: double.infinity,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: Spacing.list,
                     children: widget.children
                   )
                 ),

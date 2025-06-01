@@ -106,7 +106,7 @@ class _BaseTextFieldState extends State<BaseTextField> {
               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.primary ),borderRadius: BorderRadius.circular(10)),
               disabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface
+                color: Theme.of(context).colorScheme.surface
               ),
                 borderRadius: BorderRadius.circular(10)
               ),

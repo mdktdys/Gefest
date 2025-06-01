@@ -72,7 +72,7 @@ class CodeDiscipline {
 }
 
 class LoadLink {
-  final int id;
+  final int? id;
   final int? load;
   final int? group;
   final int? course;
@@ -92,8 +92,9 @@ class LoadLink {
   final int? KandPHours;
   final int? ExamHours;
   final int? certificationformSecond;
+  
   LoadLink({
-    required this.id,
+    this.id,
     this.load,
     this.group,
     this.course,
@@ -163,7 +164,6 @@ class LoadLink {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'load': load,
       'group': group,
       'course': course,
