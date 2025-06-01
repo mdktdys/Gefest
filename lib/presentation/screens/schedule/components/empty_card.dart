@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/presentation/screens/schedule/components/para_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
@@ -58,17 +60,14 @@ class _EmptyCardState extends ConsumerState<EmptyCard> {
                           ActionResult res;
                           switch (currentScheduleObject.type) {
                             case SearchType.group:
-                              final group = ref
-                                  .watch(dataProvider)
-                                  .getGroupById(currentScheduleObject.searchID);
-                              res = await ref
-                                  .read(scheduleProvider)
-                                  .openParaPanel(
-                                      context: context,
-                                      number: widget.number,
-                                      date: widget.date,
-                                      option: ParaPanelOption.create,
-                                      group: group);
+                              final group = ref.watch(dataProvider).getGroupById(currentScheduleObject.searchID);
+                              res = await ref.read(scheduleProvider).openParaPanel(
+                                context: context,
+                                number: widget.number,
+                                date: widget.date,
+                                option: ParaPanelOption.create,
+                                group: group
+                              );
                               break;
                             case SearchType.teacher:
                               final teacher = ref
@@ -100,7 +99,7 @@ class _EmptyCardState extends ConsumerState<EmptyCard> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                        color: Theme.of(context).colorScheme.surface)),
+                      color: Theme.of(context).colorScheme.surface)),
                 width: double.infinity,
                 height: double.infinity,
                 child: const Column(

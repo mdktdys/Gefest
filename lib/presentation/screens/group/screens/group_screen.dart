@@ -165,6 +165,44 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
                     children: [
                       BaseElevatedButton(
                         text: 'Новая привязка',
+                        onTap: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (context) => Panel(
+                              title: 'Новая привязка',
+                              chilren: [
+                                BaseTextFieldSelector(
+                                  initial: group,
+                                  header: "Группа",
+                                  items: ref.watch(groupsProvider).value ?? [],
+                                  itemSelected: (item) {
+                                    group = item;
+                                  },
+                                ),
+                                BaseTextFieldSelector(
+                                  header: "Предмет",
+                                  items: ref.watch(coursesProvider).value ?? [],
+                                  itemSelected: (item) {
+                                    course = item;
+                                  },
+                                ),
+                                BaseTextFieldSelector(
+                                  header: "Преподаватель",
+                                  items: ref.watch(teachersProvider).value ?? [],
+                                  itemSelected: (item) {
+                                    teacher = item;
+                                  },
+                                ),
+                                BaseOutlinedButton(
+                                  text: "Отмена",
+                                  onTap: () {
+                                    context.pop();
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        },
                       )
                     ],
                   ),
@@ -175,6 +213,97 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
           ],
         );
       },
+    );
+  }
+}
+
+class Panel extends StatelessWidget {
+  final String title;
+  final List<Widget> chilren;
+ 
+  const Panel({
+    required this.title,
+    required this.chilren,
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Row(
+        children: [
+          const DialogBlackout(),
+          ParaPanel(
+            title: title,
+            children: chilren,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class ParaPanel extends ConsumerStatefulWidget {
+  final String title;
+  final List<Widget> children;
+
+  const ParaPanel({
+    required this.title,
+    required this.children,
+    super.key
+  });
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ParaPanelState();
+}
+
+class _ParaPanelState extends ConsumerState<ParaPanel> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: double.infinity,
+      width: 670,
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+        color: Theme.of(context).colorScheme.surface
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant)
+                    )
+                  ),
+                  child: Text(
+                    widget.title,
+                    textAlign: TextAlign.left,
+                    style: context.styles.ubuntu20,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: widget.children
+                  )
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

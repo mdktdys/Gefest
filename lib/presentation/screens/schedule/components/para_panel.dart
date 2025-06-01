@@ -1,11 +1,13 @@
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:gefest/core/api/models/int_search_wrapper.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/api/api.dart';
 import '../../../shared/shared.dart';
@@ -24,8 +26,8 @@ class ParaPanel extends ConsumerStatefulWidget {
   final Group? group;
   final Course? course;
   final int? paraID;
-  const ParaPanel(
-      {super.key,
+  
+  const ParaPanel({super.key,
       this.date,
       required this.option,
       this.number,

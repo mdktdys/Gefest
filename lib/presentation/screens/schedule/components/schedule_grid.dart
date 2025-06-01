@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/presentation/screens/schedule/components/empty_card.dart';
 
 import '../../../../core/api/models/models.dart';
+
 import 'schedule_card.dart';
 
 class ScheduleGrid extends ConsumerStatefulWidget {
   final List<int> collection;
   final DateTime mondayDate;
   final List<Paras> weekParas;
-  const ScheduleGrid(
-      {super.key,
-      required this.collection,
-      required this.mondayDate,
-      required this.weekParas});
+  
+  const ScheduleGrid({
+    super.key,
+    required this.collection,
+    required this.mondayDate,
+    required this.weekParas
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ScheduleGridState();
@@ -27,9 +32,7 @@ class _ScheduleGridState extends ConsumerState<ScheduleGrid> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: widget.collection.map((day) {
         final DateTime currentDay = widget.mondayDate.add(Duration(days: day));
-        final dayParas = widget.weekParas
-            .where((paras) => paras.date == currentDay)
-            .toList();
+        final dayParas = widget.weekParas.where((paras) => paras.date == currentDay).toList();
         return Expanded(
           child: Builder(builder: (context) {
             return ref.watch(timetableProvider).when(data: (data) {
