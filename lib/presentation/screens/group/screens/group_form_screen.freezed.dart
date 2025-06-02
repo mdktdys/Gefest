@@ -16,6 +16,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GroupFromState {
   String? get title;
+  String? get image;
+  Department? get department;
 
   /// Create a copy of GroupFromState
   /// with the given fields replaced by the non-null parameter values.
@@ -30,15 +32,18 @@ mixin _$GroupFromState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is GroupFromState &&
-            (identical(other.title, title) || other.title == title));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.image, image) || other.image == image) &&
+            (identical(other.department, department) ||
+                other.department == department));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title);
+  int get hashCode => Object.hash(runtimeType, title, image, department);
 
   @override
   String toString() {
-    return 'GroupFromState(title: $title)';
+    return 'GroupFromState(title: $title, image: $image, department: $department)';
   }
 }
 
@@ -48,7 +53,7 @@ abstract mixin class $GroupFromStateCopyWith<$Res> {
           GroupFromState value, $Res Function(GroupFromState) _then) =
       _$GroupFromStateCopyWithImpl;
   @useResult
-  $Res call({String? title});
+  $Res call({String? title, String? image, Department? department});
 }
 
 /// @nodoc
@@ -65,12 +70,22 @@ class _$GroupFromStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = freezed,
+    Object? image = freezed,
+    Object? department = freezed,
   }) {
     return _then(_self.copyWith(
       title: freezed == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
+      image: freezed == image
+          ? _self.image
+          : image // ignore: cast_nullable_to_non_nullable
+              as String?,
+      department: freezed == department
+          ? _self.department
+          : department // ignore: cast_nullable_to_non_nullable
+              as Department?,
     ));
   }
 }
@@ -78,10 +93,14 @@ class _$GroupFromStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _GroupFromState implements GroupFromState {
-  _GroupFromState({this.title});
+  _GroupFromState({this.title, this.image, this.department});
 
   @override
   final String? title;
+  @override
+  final String? image;
+  @override
+  final Department? department;
 
   /// Create a copy of GroupFromState
   /// with the given fields replaced by the non-null parameter values.
@@ -96,15 +115,18 @@ class _GroupFromState implements GroupFromState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _GroupFromState &&
-            (identical(other.title, title) || other.title == title));
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.image, image) || other.image == image) &&
+            (identical(other.department, department) ||
+                other.department == department));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title);
+  int get hashCode => Object.hash(runtimeType, title, image, department);
 
   @override
   String toString() {
-    return 'GroupFromState(title: $title)';
+    return 'GroupFromState(title: $title, image: $image, department: $department)';
   }
 }
 
@@ -116,7 +138,7 @@ abstract mixin class _$GroupFromStateCopyWith<$Res>
       __$GroupFromStateCopyWithImpl;
   @override
   @useResult
-  $Res call({String? title});
+  $Res call({String? title, String? image, Department? department});
 }
 
 /// @nodoc
@@ -133,12 +155,22 @@ class __$GroupFromStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? title = freezed,
+    Object? image = freezed,
+    Object? department = freezed,
   }) {
     return _then(_GroupFromState(
       title: freezed == title
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
+      image: freezed == image
+          ? _self.image
+          : image // ignore: cast_nullable_to_non_nullable
+              as String?,
+      department: freezed == department
+          ? _self.department
+          : department // ignore: cast_nullable_to_non_nullable
+              as Department?,
     ));
   }
 }

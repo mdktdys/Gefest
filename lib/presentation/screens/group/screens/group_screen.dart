@@ -157,9 +157,10 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
                                 ),
                                 SizedBox(width: Spacing.list),
                                 SizedBox(
-                                  height: 48,
+                                  height: 36,
                                   child: BaseIconButton(
                                     icon: 'assets/icons/clear.svg',
+                                    iconColor: Theme.of(context).colorScheme.outline,
                                     onTap: () async {
                                       bool result = await showDialog(context: context, builder: (context) => YesNoDialog(
                                         title: 'Удалить привязку?',

@@ -44,7 +44,7 @@ final class GroupFormNotifierProvider
   }
 }
 
-String _$groupFormNotifierHash() => r'a7537c0e9e55a7b9b1e6311a072ce02a7c3857f1';
+String _$groupFormNotifierHash() => r'72b31a49025c0900dc61f6de8369069104930fdc';
 
 abstract class _$GroupFormNotifier extends $Notifier<GroupFromState> {
   GroupFromState build();

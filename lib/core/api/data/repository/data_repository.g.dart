@@ -47,7 +47,7 @@ final class DataSourceRepositoryProvider
 }
 
 String _$dataSourceRepositoryHash() =>
-    r'e5bdc01b69a13c2e42b16f0176c61616e1443b00';
+    r'e3abf15a1b8034836b6068c6933e2cbb716e3ba6';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

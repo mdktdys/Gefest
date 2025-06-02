@@ -19,21 +19,22 @@ class BaseTextField extends StatefulWidget {
   final bool locked;
   final bool autofocus;
 
-  const BaseTextField(
-      {super.key,
-      this.autofillHints,
-      this.hintText,
-      this.header,
-      this.controller,
-      this.validator,
-      this.onChanged,
-      this.autofocus = false,
-      this.onTap,
-      this.onTapOutside,
-      this.onEditingComplete,
-      this.onFieldSubmitted,
-      this.locked = false,
-      this.hidable = false});
+  const BaseTextField({
+    this.autofocus = false,
+    this.hidable = false,
+    this.autofillHints,
+    this.hintText,
+    this.header,
+    this.controller,
+    this.validator,
+    this.onChanged,
+    this.onTap,
+    this.onTapOutside,
+    this.onEditingComplete,
+    this.onFieldSubmitted,
+    this.locked = false,
+    super.key,
+  });
 
   @override
   State<BaseTextField> createState() => _BaseTextFieldState();

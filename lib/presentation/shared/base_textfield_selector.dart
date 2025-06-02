@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:gefest/configs/images.dart';
 import 'package:gefest/theme.dart';
 
 import '../../core/api/api.dart';
@@ -32,7 +33,7 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
   SearchItem? choosed;
   TextEditingController controller = TextEditingController();
   List<SearchItem> filtered = [];
-  bool field_activated = false;
+  bool fieldActivated = false;
   bool fieldLocked = false;
 
   @override
@@ -49,9 +50,7 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
 
   _filterSearch(text) {
     setState(() {
-      filtered = widget.items
-          .where((x) => x.searchText.toLowerCase().contains(text))
-          .toList();
+      filtered = widget.items.where((x) => x.searchText.toLowerCase().contains(text)).toList();
     });
   }
 
@@ -67,7 +66,7 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
   _clearField() {
     setState(() {
       choosed = null;
-      field_activated = false;
+      fieldActivated = false;
       filtered = widget.items;
       controller.clear();
     });
@@ -85,9 +84,9 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
               child: BaseTextField(
                 locked: choosed != null ? true : false,
                 onTap: () {
-                  if (!field_activated && choosed == null) {
+                  if (!fieldActivated && choosed == null) {
                     setState(() {
-                      field_activated = true;
+                      fieldActivated = true;
                     });
                   }
                 },
@@ -97,14 +96,12 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
                 hintText: widget.hint,
               ),
             ),
-            const SizedBox(
-              width: 5,
-            ),
+            const SizedBox(width: 5),
             SizedBox(
               width: 48,
               height: 48,
               child: BaseIconButton(
-                icon: "assets/icons/clear.svg",
+                icon: Images.trash,
                 iconColor: Theme.of(context).colorScheme.onSurface,
                 onTap: () {
                   _clearField();
@@ -113,62 +110,62 @@ class _BaseTextFieldSelectorState extends ConsumerState<BaseTextFieldSelector> {
             )
           ],
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const SizedBox(height: 5),
         AnimatedSize(
             alignment: Alignment.topCenter,
             duration: const Duration(milliseconds: 300),
-            child: (choosed == null && field_activated)
+            child: (choosed == null && fieldActivated)
                 ? ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 600),
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10)),
+                        color: Colors.black.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
                       child: filtered.isEmpty
-                          ? SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                "Ничего не найдено",
-                                textAlign: TextAlign.center,
-                                style: Fa.smedium,
-                              ),
-                            )
-                          : ListView.separated(
-                              separatorBuilder: (context, index) {
-                                return Divider(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  indent: 10,
-                                  endIndent: 10,
-                                );
-                              },
-                              shrinkWrap: true,
-                              itemCount: filtered.length,
-                              itemBuilder: (context, index) {
-                                final item = filtered[index];
-                                return Material(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  clipBehavior: Clip.antiAlias,
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: InkWell(
-                                      hoverColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      onTap: () {
-                                        _onSelect(item);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          item.searchText,
-                                          style: Fa.smedium,
-                                        ),
-                                      )),
-                                );
-                              },
+                        ? SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "Ничего не найдено",
+                              textAlign: TextAlign.center,
+                              style: Fa.smedium,
                             ),
+                          )
+                        : ListView.separated(
+                            separatorBuilder: (context, index) {
+                              return Divider(
+                                color: Theme.of(context).colorScheme.surface,
+                                indent: 10,
+                                endIndent: 10,
+                              );
+                            },
+                            shrinkWrap: true,
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final item = filtered[index];
+                              return Material(
+                                color: Theme.of(context).colorScheme.surface,
+                                clipBehavior: Clip.antiAlias,
+                                borderRadius: BorderRadius.circular(10),
+                                child: InkWell(
+                                  hoverColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHigh,
+                                  onTap: () {
+                                    _onSelect(item);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      item.searchText,
+                                      style: Fa.smedium,
+                                    ),
+                                  )
+                                ),
+                              );
+                            },
+                          ),
                     ),
                   )
                 : const SizedBox.shrink())

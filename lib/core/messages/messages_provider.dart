@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:gefest/core/extensions/context_extension.dart';
-import 'package:gefest/theme.dart';
-
 final messagesProvider = Provider<Messanger>((ref) {
   return Messanger(ref: ref);
 });
