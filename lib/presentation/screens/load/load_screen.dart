@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/presentation/screens/load/providers/load_provider.dart';
-import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
+import 'package:gefest/presentation/shared/async_provider.dart';
 import 'package:gefest/theme.dart';
-import 'package:go_router/go_router.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class LoadScreenParameters extends QueryParameters {
   LoadScreenParameters(super.context);

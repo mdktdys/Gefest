@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:gefest/core/basics.dart';
 import 'package:gefest/presentation/screens/course/course_screen.dart';
 import 'package:gefest/presentation/screens/dashboard/dashboard.dart';
 import 'package:gefest/presentation/screens/group/screens/group_form_screen.dart';
@@ -15,8 +14,9 @@ import 'package:gefest/presentation/screens/login/login.dart';
 import 'package:gefest/presentation/screens/panel/panel_scaffold.dart';
 import 'package:gefest/presentation/screens/schedule/schedule.dart';
 import 'package:gefest/presentation/screens/settings/settings_screen.dart';
+import 'package:gefest/presentation/screens/teachers/teacher_form_screen.dart';
+import 'package:gefest/presentation/screens/teachers/teacher_screen.dart';
 import 'package:gefest/presentation/screens/teachers/teachers.dart';
-import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -101,6 +101,12 @@ final router = GoRouter(
             pageBuilder: (context, state) {
               return transitionPage(state, GroupFormScreen(context));
             },
+          ),
+          GoRoute(
+            path: Routes.newTeacher,
+            pageBuilder: (context, state) {
+              return transitionPage(state, TeacherFormScreen(context));
+            },
           )
         ]),
   ],
@@ -121,10 +127,13 @@ CustomTransitionPage transitionPage(state,page) {
 }
 
 abstract class Routes {
+  static final String teacher = '/teacher';
   static final String teachers = '/teachers';
   static final String baseTeacher = '/teacher';
   static final String newTeacher = '/new_teacher';
 
+  static final String groups = '/groups';
+  static final String group = '/group';
   static final String newGroup = '/new_group';
 }
 

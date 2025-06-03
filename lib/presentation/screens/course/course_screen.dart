@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/course/provider/course_provider.dart';
-import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
+import 'package:gefest/presentation/shared/async_provider.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';

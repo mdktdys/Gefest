@@ -21,20 +21,33 @@ class Group extends SearchItem {
     searchID: id
   );
 
-  factory Group.create() {
+  factory Group.mock() {
     return Group(
       id: -1,
-      name: '',
-      department: 1,
-      image: ''
+      name: 'name',
+      department:1,
+      image: 'image'
+    );
+  }
+
+  factory Group.create({
+    required final String name,
+    final String? image,
+    final int? departmentId,
+  }) {
+    return Group(
+      id: -1,
+      name: name,
+      department: departmentId ?? -1,
+      image: image
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'name': name,
       'department': department,
+      'image': image
     };
   }
 

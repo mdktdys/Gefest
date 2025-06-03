@@ -59,21 +59,26 @@ class _BaseElevatedButtonState extends ConsumerState<BaseElevatedButton> {
             height: widget.height,
             width: widget.width,
             padding: const EdgeInsets.all(10),
-            child: loading
-                ? const Center(
-                    child: SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 150),
+              child: loading
+                  ? const Center(
+                    key: ValueKey('laoding'),
+                      child: SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
                       ),
+                    )
+                  : Text(
+                      key: ValueKey('loaded'),
+                      widget.text ?? "",
+                      textAlign: TextAlign.center,
+                      style: context.styles.ubuntu16
                     ),
-                  )
-                : Text(
-                    widget.text ?? "",
-                    textAlign: TextAlign.center,
-                    style: context.styles.ubuntu16
-                  )),
+            )),
       ),
     );
   }

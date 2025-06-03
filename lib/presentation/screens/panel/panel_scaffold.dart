@@ -1,16 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
+import 'package:gefest/configs/images.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
+import 'package:gefest/presentation/shared/base_icon_button.dart';
 import 'package:gefest/theme.dart';
 import 'package:gefest/theme/spacing.dart';
-
-import '../../shared/shared.dart';
 
 class CustomSideBarX extends StatelessWidget {
   final SidebarXController controller;
@@ -144,9 +142,9 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
     final items = [
       ("assets/icons/home.svg","/dashboard","Home"),
       ("assets/icons/calendar.svg","/schedule","Home"),
-      ("assets/icons/persons.svg","/teachers","teachers"),
+      (Images.teacher,"/teachers","teachers"),
       ("assets/icons/persons.svg","/groups","groups"),
-      ("assets/icons/persons.svg","/load","load"),
+      // ("assets/icons/persons.svg","/load","load"),
       ("assets/icons/settings.svg", '/settings', 'settings')
     ];
 
@@ -154,7 +152,6 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       return SidebarXItem(
         iconBuilder: (selected, hovered) {
           bool selected = GoRouter.of(context).routeInformationProvider.value.uri.toString() == item.$2;
-          log(selected.toString());
           return SizedBox(
             width: 44,
             height: 44,

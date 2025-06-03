@@ -58,14 +58,15 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
         SizedBox(height: 20),
         Builder(
           builder: (context) {
-            return Column(
-              children: AnimateList(
-                interval: 100.ms,
-                effects: [FadeEffect(duration: 300.ms)],
-                children: ref.watch(filteredGroupsProvider).map((Group group) {
-                  return GroupTileWidget(group: group);
-                }).toList(),
-              ) 
+            final List<Group> groups =  ref.watch(filteredGroupsProvider);
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: groups.length,
+              prototypeItem: GroupTileWidget(group: Group.mock()),
+              itemBuilder: (context, index) {
+                final Group group = groups[index];
+                return GroupTileWidget(group: group);
+              },
             );
           },
         ),

@@ -9,9 +9,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/api/models/teachers.dart';
-import 'package:gefest/presentation/screens/teachers/techer_screen.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
+import 'package:gefest/presentation/shared/new_synonym_body.dart';
 import 'package:gefest/theme.dart';
 
 enum SortOption { nameAsc, nameDesc }
@@ -119,24 +119,20 @@ class TeachersFilter extends ChangeNotifier {
   String get filterText => _filterText;
   SortOption get sortOption => _sortOption;
 
-  // Обновление текста фильтрации
   void updateFilterText(String text) {
     _filterText = text;
     notifyListeners();
   }
 
-  // Обновление параметра сортировки
   void updateSortOption(SortOption option) {
     _sortOption = option;
     notifyListeners();
   }
 
-  // Метод для асинхронной фильтрации и сортировки
   Future<List<Teacher>> applyFilters(List<Teacher> teachers) async {
     return compute(_filterAndSort, [teachers, _filterText, _sortOption]);
   }
 
-  // Функция для фильтрации и сортировки на фоне
   List<Teacher> _filterAndSort(List<dynamic> args) {
     final teachers = args[0] as List<Teacher>;
     final filterText = args[1] as String;

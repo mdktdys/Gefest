@@ -1,17 +1,28 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:gefest/configs/images.dart';
 import 'package:gefest/core/api/data/providers/department_provider.dart';
+import 'package:gefest/core/api/data/repository/data_repository.dart';
 import 'package:gefest/core/api/models/department_model.dart';
+import 'package:gefest/core/api/models/entity.dart';
+import 'package:gefest/core/api/models/models.dart';
 import 'package:gefest/core/basics.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
+import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_outlined_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
+import 'package:gefest/routes.dart';
 import 'package:gefest/theme/spacing.dart';
 
 part 'group_form_screen.freezed.dart';
@@ -65,25 +76,15 @@ class GroupFormScreen extends ScreenPageWidget<QueryParameters>  {
                             BaseSelector<Department>(
                               header: 'Отделение',
                               items: ref.watch(departmentsProvider),
-                            ),
-                            BaseTextField(
-                              header: 'Отделение',
-                              validator: (p0) {
-                                if (p0?.isEmpty ?? true) {
-                                  return 'Отделение не может быть пустым';
-                                }
-                                                  
-                                return null;
-                              },
-                              onChanged: (p0) {
-                                ref.read(groupFormNotifierProvider.notifier).onNameChanged(p0);
-                                _formKey.currentState!.validate();
-                              },
+                              initial: Department(id: 0, name: 'Не определено'),
+                              onSelected: (Department department) {
+                                ref.read(groupFormNotifierProvider.notifier).onDepartmentChanged(department);
+                              }
                             ),
                             BaseTextField(
                               header: 'Изображение',
                               onChanged: (p0) {
-                                ref.read(groupFormNotifierProvider.notifier).onNameChanged(p0);
+                                ref.read(groupFormNotifierProvider.notifier).onImageChanged(p0);
                                 _formKey.currentState!.validate();
                               },
                             ),
@@ -108,15 +109,24 @@ class GroupFormScreen extends ScreenPageWidget<QueryParameters>  {
                 child: BaseOutlinedButton(
                   text: 'Отмена',
                   onTap: () {
-                    
+                    context.go(Routes.groups);
                   },
                 ),
               ),
               Expanded(
                 child: BaseElevatedButton(
                   text: 'Создать группу',
-                  onTap: () {
-                    
+                  onTap: () async {
+                    final provider = ref.read(groupFormNotifierProvider);
+                    final Group group = Group.create(
+                      name: provider.title ?? '-',
+                      image: provider.image,
+                      departmentId: provider.department?.id
+                    );
+                    final int groupId = await ref.watch(dataSourceRepositoryProvider).createGroup(group: group);
+                    ref.read(messagesProvider).showMessage(type: MesTypes.success, header: 'Успешно', body: 'Группа создана', context: context);
+                    log(groupId.toString());
+                    context.go(Uri(path: '/group',queryParameters: {'id': groupId.toString()}).toString());
                   },
                 ),
               )
@@ -128,56 +138,94 @@ class GroupFormScreen extends ScreenPageWidget<QueryParameters>  {
   }
 }
 
-class BaseSelector<T> extends ConsumerWidget {
+class BaseSelector<T extends Entity> extends ConsumerStatefulWidget {
   final AsyncValue<List<T>> items;
+  final Function(T) onSelected;
   final String? header;
- 
+  final T? initial;
+
   const BaseSelector({
     required this.items,
+    required this.onSelected,
+    this.initial,
     this.header,
     super.key
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _BaseSelectorState<T>();
+}
+
+class _BaseSelectorState<T extends Entity> extends ConsumerState<BaseSelector<T>> {
+  T? selected;
+
+  @override
+  void initState() {
+    selected = widget.initial;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (header != null) ...[
+        if (widget.header != null) ...[
           Text(
-            header!,
+            widget.header!,
             textAlign: TextAlign.left,
             style: context.styles.ubuntu16,
           ),
           const SizedBox(height: 10)
         ],
       Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      borderRadius: BorderRadius.circular(8),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onHover: (value) {},
-        onTap: () async {
-          // setState(() {
-          //   loading = true;
-          // });
-          // try {
-          //   await widget.onTap?.call();
-          // } catch (e) {
-          //   ref.watch(messagesProvider).showMessage(
-          //     type: MesTypes.error,
-          //     header: "Ошибка",
-          //     body: e.toString(),
-          //     context: context
-          //   );
-          // }
-          // setState(() {
-          //   loading = false;
-          // });
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: items.isLoading
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(8),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell( 
+          onHover: (value) {},
+          onTap: () async {
+            selected = await showModalBottomSheet(context: context, builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: Spacing.listHorizontalPadding,
+                  children: [
+                    if (widget.header != null)
+                      Text(
+                        widget.header ?? '',
+                        textAlign: TextAlign.center,
+                        style: context.styles.ubuntu18,
+                      ),
+                    Column(
+                      spacing: Spacing.list,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: widget.items.value!.map((final Entity element) {
+                        return Bounceable(
+                          onTap: () {
+                            context.pop(element);
+                          },
+                          child: BaseContainer(
+                            child: Text(element.displayName)
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              );
+            }) ?? selected;
+            if (selected != null) {
+              widget.onSelected(selected!);
+            }
+            setState(() {});
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: widget.items.isLoading
             ? const Center(
                 child: SizedBox(
                   height: 24,
@@ -187,12 +235,22 @@ class BaseSelector<T> extends ConsumerWidget {
                   ),
                 ),
               )
-            : Text(
-                "",
-                textAlign: TextAlign.center,
-                style: context.styles.ubuntu16
-              )
-            ),
+            : Row(
+              children: [
+                Expanded(
+                  child: Text(
+                      selected?.displayName ?? 'Не выбрано',
+                      textAlign: TextAlign.left,
+                      style: context.styles.ubuntu16
+                    ),
+                ),
+                SvgPicture.asset(
+                  Images.menu,
+                  colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.outlineVariant, BlendMode.srcIn),
+                )
+              ],
+            )
+            )
           ),
         )
       ],

@@ -7,16 +7,36 @@ import 'package:gefest/core/api/models/search.dart';
 class Teacher extends SearchItem {
   final int id;
   final String? name;
+  final String? image;
   final List<String> synonyms;
 
-  Teacher({required this.id, required this.name, required this.synonyms})
-      : super(searchText: name ?? '',searchID: id,type: SearchType.teacher);
+  factory Teacher.create({
+    required String name,
+    String? image
+  }) {
+    return Teacher(
+      id: -1,
+      name: name,
+      image: image,
+      synonyms: []
+    );
+  }
+
+  Teacher({
+    required this.id,
+    required this.name,
+    required this.synonyms,
+    required this.image,
+  }) : super(
+    searchText: name ?? '',
+    searchID: id,
+    type: SearchType.teacher
+  );
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'name': name,
-      'synonyms': synonyms,
+      'image': image,
     };
   }
 
@@ -24,6 +44,7 @@ class Teacher extends SearchItem {
     return Teacher(
         id: map['id'] as int,
         name: map['name'] != null ? map['name'] as String : null,
+        image: map['image'] != null ? map['image'] as String : null,
         synonyms: List<String>.from(
           (map['synonyms'] as List<dynamic>),
         ));

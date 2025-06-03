@@ -16,9 +16,12 @@ import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/core/messages/messages_provider.dart';
 import 'package:gefest/presentation/screens/group/providers/group_provider.dart';
 import 'package:gefest/presentation/screens/load/providers/load_provider.dart';
-import 'package:gefest/presentation/screens/teachers/teachers_screen.dart';
+import 'package:gefest/presentation/shared/add_link_panel.dart';
+import 'package:gefest/presentation/shared/async_provider.dart';
 import 'package:gefest/presentation/shared/base_container.dart';
 import 'package:gefest/presentation/shared/shared.dart';
+import 'package:gefest/presentation/shared/yes_no_dialog.dart';
+import 'package:gefest/routes.dart';
 import 'package:gefest/theme/spacing.dart';
 
 class GroupScreenParameters extends QueryParameters {
@@ -73,8 +76,20 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
                     children: [
                       BaseOutlinedButton(
                         text: 'Удалить',
-                        onTap: () {
-                          
+                        onTap: () async {
+                          bool result = await showDialog(context: context, builder: (context) => YesNoDialog(
+                            title: 'Удалить группу?',
+                            body: 'Это действие нельзя отменить',
+                          ));
+
+                          if (!result) {
+                            return;
+                          }
+
+                          await ref.watch(dataSourceRepositoryProvider).deleteGroup(id: group.id);
+                          ref.invalidate(groupsProvider);
+                          ref.read(messagesProvider).showMessage(type: MesTypes.success, header: 'Успешно', body: 'Группа удалена', context: context);
+                          context.go(Routes.groups);
                         },
                       )
                     ],
@@ -205,233 +220,6 @@ class GroupScreen extends ScreenPageWidget<GroupScreenParameters> {
           ],
         );
       },
-    );
-  }
-}
-
-class YesNoDialog extends ConsumerWidget {
-  final String title;
-  final String body;
-
-  const YesNoDialog({
-    required this.title,
-    required this.body,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Dialog(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 600),
-        child: BaseContainer(
-          child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: Spacing.list,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.left,
-              style: context.styles.ubuntu20,
-            ),
-            Text(
-              body,
-              textAlign: TextAlign.left,
-              style: context.styles.ubuntu14,
-            ),
-            Row(
-              spacing: Spacing.list,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: BaseOutlinedButton(
-                    text: 'Отмена',
-                    onTap: () {
-                      context.pop(false);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: BaseElevatedButton(
-                    text: 'Удалить',
-                    onTap: () {
-                      context.pop(true);
-                    },
-                  ),
-                )
-              ],
-            )
-          ],
-                )),
-      ),
-    );
-  }
-}
-
-class AddLinkPanel extends ConsumerStatefulWidget {
-  final Group group;
-
-  const AddLinkPanel({
-    required this.group,
-    super.key
-  });
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddLinkPanelState();
-}
-
-class _AddLinkPanelState extends ConsumerState<AddLinkPanel> {
-  late Group group;
-  Course? course;
-  Teacher? teacher;
-
-  @override
-  void initState() {
-    group = widget.group;    
-    super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Panel(
-      title: 'Новая привязка',
-      chilren: [
-        BaseTextFieldSelector(
-          initial: group,
-          header: "Группа",
-          items: ref.watch(groupsProvider).value ?? [],
-          itemSelected: (item) {
-            group = item;
-          },
-        ),
-        BaseTextFieldSelector(
-          header: "Предмет",
-          items: ref.watch(coursesProvider).value ?? [],
-          itemSelected: (item) {
-            course = item;
-          },
-        ),
-        BaseTextFieldSelector(
-          header: "Преподаватель",
-          items: ref.watch(teachersProvider).value ?? [],
-          itemSelected: (item) {
-            teacher = item;
-          },
-        ),
-        BaseElevatedButton(
-          text: "Создать привязку",
-          onTap: () async {
-            await ref.read(dataSourceRepositoryProvider).createLink(link: LoadLink(
-              group: group.id,
-              teacher: teacher?.id,
-              course: course?.id
-            ));
-            ref.refresh(groupLinksProvider(group.id));
-            ref.read(messagesProvider).showMessage(type: MesTypes.success, header: 'Успешно', body: 'Привязка создана', context: context);
-            context.pop();
-          },
-        ),
-        BaseOutlinedButton(
-          text: "Отмена",
-          onTap: () {
-            context.pop();
-          },
-        )
-      ],
-    );
-  }
-}
-
-class Panel extends StatelessWidget {
-  final String title;
-  final List<Widget> chilren;
- 
-  const Panel({
-    required this.title,
-    required this.chilren,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Row(
-        children: [
-          const DialogBlackout(),
-          ParaPanel(
-            title: title,
-            children: chilren,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class ParaPanel extends ConsumerStatefulWidget {
-  final String title;
-  final List<Widget> children;
-
-  const ParaPanel({
-    required this.title,
-    required this.children,
-    super.key
-  });
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ParaPanelState();
-}
-
-class _ParaPanelState extends ConsumerState<ParaPanel> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: 670,
-      decoration: BoxDecoration(
-        border: Border(left: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
-        color: Theme.of(context).colorScheme.surface
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.outlineVariant)
-                    )
-                  ),
-                  child: Text(
-                    widget.title,
-                    textAlign: TextAlign.left,
-                    style: context.styles.ubuntu20,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: Spacing.list,
-                    children: widget.children
-                  )
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
