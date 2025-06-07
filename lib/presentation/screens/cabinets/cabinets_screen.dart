@@ -5,22 +5,22 @@ import 'package:go_router/go_router.dart';
 
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/core/extensions/context_extension.dart';
-import 'package:gefest/presentation/screens/teachers/providers/teachers_providers.dart';
-import 'package:gefest/presentation/screens/teachers/widgets/teacher_list_tile.dart';
+import 'package:gefest/presentation/screens/cabinets/cabinets_providers.dart';
+import 'package:gefest/presentation/screens/cabinets/widgets/cabinet_list_tile.dart';
 import 'package:gefest/presentation/shared/async_provider.dart';
 import 'package:gefest/presentation/shared/base_elevated_button.dart';
 import 'package:gefest/presentation/shared/base_textfield.dart';
 import 'package:gefest/routes.dart';
 import 'package:gefest/theme/spacing.dart';
 
-class TeachersScreen extends ConsumerStatefulWidget {
-  const TeachersScreen({super.key});
+class CabinetsScreen extends ConsumerStatefulWidget {
+  const CabinetsScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TeachersScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CabinetsScreenState();
 }
 
-class _TeachersScreenState extends ConsumerState<TeachersScreen> {
+class _CabinetsScreenState extends ConsumerState<CabinetsScreen> {
   late final TextEditingController controller;
 
   @override
@@ -41,7 +41,7 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
       padding: const EdgeInsets.all(20.0),
       children: [
         Text(
-          'Преподаватели',
+          'Кабинеты',
           textAlign: TextAlign.left,
           style: context.styles.ubuntu20
         ),
@@ -52,28 +52,27 @@ class _TeachersScreenState extends ConsumerState<TeachersScreen> {
             Expanded(
               child: BaseTextField(
                 controller: controller,
-                hintText: 'Поиск преподавателя...',
+                hintText: 'Поиск кабинета...',
                 onChanged: (p0) {
-                  ref.read(teachersFilterProvider).updateFilterText(controller.text);
+                  ref.read(cabinetStringFilterProvider.notifier).state = controller.text;
                 },
               ),
             ),
             BaseElevatedButton(
               text: 'Добавить',
               onTap: () {
-                // final Group group = Group.create(name: '');
-                context.go(Uri(path: Routes.newTeacher).toString());
+                context.go(Uri(path: Routes.newCabinet).toString());
               },
             )
           ],
         ),
         SizedBox(height: 10),
-        AsyncProvider<List<Teacher>>(
-          provider: filteredTeachersProvider,
-          data: (teachers) {
+        AsyncProvider<List<Cabinet>>(
+          provider: filteredCabinetProvider,
+          data: (cabinets) {
             return Column(
-              children: teachers.map((teacher) {
-                return TeacherListTile(teacher);
+              children: cabinets.map((cabinet) {
+                return CabinetListTile(cabinet);
               }).toList(),
             );
           },

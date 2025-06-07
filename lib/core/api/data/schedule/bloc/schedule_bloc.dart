@@ -1,10 +1,11 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:gefest/core/api/api.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
+import 'package:gefest/core/api/api.dart';
 
 part 'schedule_event.dart';
 part 'schedule_state.dart';
@@ -12,8 +13,9 @@ part 'schedule_state.dart';
 class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   ScheduleRequest? currentRequest;
 
-  ScheduleBloc() : super(const ScheduleInitial()) {
+  ScheduleBloc(): super(const ScheduleInitial()) {
     restartable();
+
     on<LoadItemSchedule>((event, emit) async {
       try {
         emit(const ScheduleLoading());
@@ -26,15 +28,21 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
         emit(ScheduleFailed(e.toString(), s.toString()));
       }
     }, transformer: restartable());
+
     on<ReloadItemSchedule>((event, emit) async {
       try {
         if (currentRequest == null) {
           emit(const ScheduleInitial());
           return;
         }
-        final request = currentRequest!;
-        final paras = await SupabaseApi.getParas(
-            request.type, request.searchItemID, request.date);
+        
+        final ScheduleRequest request = currentRequest!;
+        final List<Paras> paras = await SupabaseApi.getParas(
+          request.type,
+          request.searchItemID,
+          request.date
+        );
+
         emit(ScheduleSuccess(paras: paras));
       } catch (e, s) {
         emit(ScheduleFailed(e.toString(), s.toString()));
@@ -43,12 +51,10 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   }
 
   @override
-  ScheduleState fromJson(Map<String, dynamic> json) =>
-      scheduleStateFromJson(json);
+  ScheduleState fromJson(Map<String, dynamic> json) => scheduleStateFromJson(json);
 
   @override
-  Map<String, dynamic> toJson(ScheduleState state) =>
-      scheduleStateToJson(state);
+  Map<String, dynamic> toJson(ScheduleState state) => scheduleStateToJson(state);
 }
 
 class SupabaseApi {

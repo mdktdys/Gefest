@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:gefest/core/api/data/data.dart';
 import 'package:gefest/core/extensions.dart';
+import 'package:gefest/core/extensions/context_extension.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/presentation/screens/schedule/providers/search_provider.dart';
 import 'package:gefest/theme.dart';
@@ -15,12 +18,10 @@ class ScheduleEditorTopPanel extends ConsumerStatefulWidget {
   const ScheduleEditorTopPanel({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ScheduleEditorTopPanelState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ScheduleEditorTopPanelState();
 }
 
-class _ScheduleEditorTopPanelState
-    extends ConsumerState<ScheduleEditorTopPanel> {
+class _ScheduleEditorTopPanelState extends ConsumerState<ScheduleEditorTopPanel> {
   TextEditingController searchController = TextEditingController(text: "");
   bool searchPanelVisible = false;
 
@@ -42,20 +43,16 @@ class _ScheduleEditorTopPanelState
               children: [
                 Text(
                   "${navigationDate.weekday.toWeekName()} ${navigationDate.formatDDMMYY()}",
-                  style: Fa.big,
+                  style: context.styles.ubuntu20,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 SizedBox(
                     width: 38,
                     height: 38,
                     child: BaseIconButton(
                       icon: "assets/icons/arrow_left.svg",
                       onTap: () {
-                        ref.read(scheduleProvider).setNavigationDate(
-                            navigationDate.subtract(const Duration(days: 7)),
-                            context);
+                        ref.read(scheduleProvider).setNavigationDate(navigationDate.subtract(const Duration(days: 7)),context);
                       },
                     )),
                 const SizedBox(
@@ -100,14 +97,14 @@ class _ScheduleEditorTopPanelState
                 // const SizedBox(
                 //   width: 10,
                 // ),
-                BaseOutlinedButton(
-                  color: const Color.fromARGB(255, 143, 39, 32),
-                  width: 100,
-                  text: "Вид",
-                  onTap: () {
-                    ref.read(scheduleProvider).switchView();
-                  },
-                )
+                // BaseOutlinedButton(
+                //   color: const Color.fromARGB(255, 143, 39, 32),
+                //   width: 100,
+                //   text: "Вид",
+                //   onTap: () {
+                //     ref.read(scheduleProvider).switchView();
+                //   },
+                // )
               ],
             ),
           ),
@@ -119,12 +116,14 @@ class _ScheduleEditorTopPanelState
               PortalTarget(
                 visible: ref.watch(searchPanelProvider).searchPanelVisible,
                 anchor: const Aligned(
-                    follower: Alignment.topLeft,
-                    target: Alignment.bottomLeft,
-                    offset: Offset(0, 15)),
+                  follower: Alignment.topLeft,
+                  target: Alignment.bottomLeft,
+                  offset: Offset(0, 15)
+                ),
                 portalFollower: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                    child: const SearchFlyoutPanel()),
+                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                  child: const SearchFlyoutPanel()
+                ),
                 child: SizedBox(
                   width: 160,
                   child: BaseTextField(
@@ -145,9 +144,7 @@ class _ScheduleEditorTopPanelState
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
             ],
           )
         ],

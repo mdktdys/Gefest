@@ -27,66 +27,6 @@ class TeacherScreenParameters extends QueryParameters {
   int get teacherId => int.parse(getParams['id']!);
 }
 
-// class TeacherScreen extends ScreenPageWidget<TeacherScreenParameters> {
-  
-//   TeacherScreen(BuildContext context) : super(params: TeacherScreenParameters(context));
-
-//   @override 
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return AsyncProvider(
-//       provider: teacherProvider(params.teacherId),
-//       data: (teacher) {
-//         return SingleChildScrollView(
-//           padding: EdgeInsets.symmetric(horizontal: 20),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               SizedBox(height: 20),
-//               Text(teacher.name??'',style: Fa.medium,),
-//               SizedBox(height: 20),
-//               Row(children: [
-//                 BaseOutlinedButton(
-//                   height: 40,
-//                   width: 100,
-//                   color: Colors.green,
-//                   text: "Добавить",
-//                   onTap: () async {
-//                     ref.read(teacherSreenProvider).addSynonyms(context,teacher);
-//                   },
-//                 )
-//               ]),
-//               SizedBox(height: 20,),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: teacher.synonyms.map((syn){
-//                   return Container(
-//                     margin: const EdgeInsets.only(bottom: 10),
-//                     padding: const EdgeInsets.all(10),
-//                     decoration: BoxDecoration(
-//                       borderRadius: BorderRadius.circular(8),
-//                       border: Border.all(
-//                         color: Theme.of(context).colorScheme.onSurface)),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Expanded(child: SelectionArea(child: Text(syn,style: Fa.small))),
-//                         IconButton(onPressed: (){
-//                           ref.read(teacherSreenProvider).removeSynonyms(context: context, teacher: teacher, syn: syn);
-//                         }, icon: Icon(Icons.remove))
-//                       ],
-//                     ),
-//                   );
-//                 }).toList(),
-//               )
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
-
 class TeacherScreen extends ScreenPageWidget<TeacherScreenParameters> {
   TeacherScreen(BuildContext context) : super(params: TeacherScreenParameters(context));
 

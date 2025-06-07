@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+
 import 'package:gefest/core/api/api.dart';
 import 'package:gefest/core/extensions.dart';
 import 'package:gefest/presentation/screens/schedule/components/editor_panel_top_panel.dart';
 import 'package:gefest/presentation/screens/schedule/providers/schedule_provider.dart';
 import 'package:gefest/theme.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 import 'components/schedule_grid.dart';
 
@@ -188,9 +190,10 @@ class _ScheduleViewState extends ConsumerState<ScheduleView> {
                   ),
                   Expanded(
                     child: ScheduleGrid(
-                        collection: widget.collection,
-                        mondayDate: widget.mondayDate,
-                        weekParas: widget.weekParas),
+                      collection: widget.collection,
+                      mondayDate: widget.mondayDate,
+                      weekParas: widget.weekParas
+                    ),
                   ),
                 ],
               );

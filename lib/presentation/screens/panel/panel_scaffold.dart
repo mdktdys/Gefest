@@ -107,33 +107,33 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       return Scaffold(
         key: _key,
         drawer: CustomSideBarX(
-            controller: controller,
-            items: _buildItems(context)
-          ),
-          body: Column(
-            children: [
-              Container(
-                height: 65,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))),
-                child: Row(
-                  children: [
-                    BaseIconButton(
-                      icon: "assets/icons/home.svg",
-                      onTap: () {
-                        controller.setExtended(false);
-                        _key.currentState!.openDrawer();
-                      },
-                    ),
-                    SizedBox(width: 5),
-                    Expanded(child: Text(GoRouter.of(context).routeInformationProvider.value.uri.toString()))
-                  ],
-                ),
+          controller: controller,
+          items: _buildItems(context)
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: 65,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant))),
+              child: Row(
+                children: [
+                  BaseIconButton(
+                    icon: "assets/icons/home.svg",
+                    onTap: () {
+                      controller.setExtended(false);
+                      _key.currentState!.openDrawer();
+                    },
+                  ),
+                  SizedBox(width: 5),
+                  Expanded(child: Text(GoRouter.of(context).routeInformationProvider.value.uri.toString()))
+                ],
               ),
-              Expanded(child: widget.child)
-            ],
-          )
-        );
+            ),
+            Expanded(child: widget.child)
+          ],
+        )
+      );
     }
   }
 
@@ -144,6 +144,7 @@ class _PanelScaffoldState extends ConsumerState<PanelScaffold> {
       ("assets/icons/calendar.svg","/schedule","Home"),
       (Images.teacher,"/teachers","teachers"),
       ("assets/icons/persons.svg","/groups","groups"),
+      ("assets/icons/cabinets.svg","/cabinets","cabinets"),
       // ("assets/icons/persons.svg","/load","load"),
       ("assets/icons/settings.svg", '/settings', 'settings')
     ];
