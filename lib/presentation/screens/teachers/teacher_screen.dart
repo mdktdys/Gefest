@@ -96,6 +96,71 @@ class TeacherScreen extends ScreenPageWidget<TeacherScreenParameters> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: Spacing.list,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Очереди',
+                        style: context.styles.ubuntu18,
+                      ),
+                      BaseElevatedButton(
+                        text: 'Новая очередь',
+                        onTap: () async {
+                          ref.read(teacherSreenProvider).createQueue(context, teacher);
+                        },
+                      )
+                    ],
+                  ),
+                  AsyncProvider(
+                    provider: teacherQueuesProvider(teacher.id),
+                    loading: () {
+                      return CircularProgressIndicator();
+                    },
+                    data: (List<Queue> queues) {
+                      return Wrap(
+                        spacing: Spacing.list,
+                        runSpacing: Spacing.list,
+                        children: queues.map((final Queue queue) {
+                          return BaseContainer(
+                            color: Theme.of(context).colorScheme.surfaceContainer,
+                            child: Row(
+                              spacing: Spacing.list,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  queue.name,
+                                  style: context.styles.ubuntu16,
+                                ),
+                                Bounceable(
+                                  onTap: () {
+                                    ref.read(teacherSreenProvider).deleteQueue(
+                                      context: context,
+                                      teacher: teacher,
+                                      queue: queue
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    Images.trash,
+                                    colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.outlineVariant, BlendMode.srcIn),
+                                  ),
+                                )
+                              ],
+                            )
+                          );
+                        }).toList(),
+                      );
+                    },
+                  )
+                ],
+              )
+            ),
+            Padding(padding: EdgeInsetsGeometry.only(top: Spacing.listHorizontalPadding)),
+            BaseContainer(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: Spacing.list,
+                children: [
                   Text(
                     'Синонимы',
                     style: context.styles.ubuntu18,
